@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Spanish Vocab Quiz (pp.120-121)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f3efe8;
+    }
+
+    #quiz-box {
+      max-width: 520px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px 0 #bbb;
+      padding: 2em 1.5em 1em 1.5em;
+    }
+
+    @media (max-width: 600px) {
+      #quiz-box {
+        max-width: 99vw;
+        padding: 1em 0.4em 0.7em 0.4em;
+      }
+
+      h2 {
+        font-size: 1.08em;
+      }
+    }
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 0.4em;
+    }
+
+    input[type="text"],
+    button {
+      font-size: 1.1em;
+      width: 100%;
+      padding: 0.6em;
+      margin-top: 0.2em;
+      border-radius: 5px;
+      border: 1px solid #b1b1b1;
+      box-sizing: border-box;
+    }
+
+    input[type='text']:focus {
+      outline: 2px solid #adb5bd;
+      background: #f8f9fa;
+    }
+
+    button {
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 0.8em;
+      transition: background 0.12s;
+    }
+
+    button:active,
+    button:focus {
+      background: #256029;
+    }
+
+    #feedback {
+      font-weight: bold;
+      min-height: 24px;
+      margin-top: 10px;
+      transition: color 0.2s;
+    }
+
+    .stats-history-section {
+      background: #f6f4ec;
+      margin: 24px -24px 0 -24px;
+      padding: 16px 24px 1px 24px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      box-sizing: border-box;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 600px) {
+      .stats-history-section {
+        margin: 18px -10px 0 -10px;
+        padding: 14px 9px 0.5px 9px;
+      }
+    }
+
+    .scorebox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8em;
+      font-size: 1.08em;
+    }
+
+    .scorebox .right {
+      color: #1a7e24;
+    }
+
+    .scorebox .wrong {
+      color: #d32f2f;
+    }
+
+    .score-label {
+      font-variant: small-caps;
+    }
+
+    #history-list {
+      list-style: none;
+      margin: 0.5em 0 0 0;
+      padding: 0;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      margin-bottom: 4px;
+      padding: 5px 0 5px 0;
+      border-bottom: 1px dotted #e8e5c7;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .correct {
+      color: #1b8c18;
+    }
+
+    .incorrect {
+      color: #d32f2f;
+    }
+
+    .qeng {
+      flex: 3;
+    }
+
+    .userans {
+      flex: 2;
+      padding-left: 12px;
+      font-style: italic;
+    }
+
+    .corrans {
+      flex: 2;
+      padding-left: 12px;
+    }
+
+    @media (max-width:600px) {
+      .scorebox {
+        font-size: 0.99em;
+      }
+
+      .userans,
+      .corrans {
+        padding-left: 7px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="quiz-box">
+    <h2>Spanish Vocab Quiz (pp.120-121)</h2>
+    <div id="question"></div>
+    <!-- Autocomplete/autocorrect/spellcheck all disabled on answer input -->
+    <input type="text" id="answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      placeholder="Type answer using accents if needed" />
+    <button onclick="checkAnswer()" style="display:none;">Check Answer</button>
+    <div id="feedback"></div>
+    <div class="stats-history-section">
+      <div class="scorebox">
+        <span class="score-label right">Right: <span id="right">0</span></span>
+        <span class="score-label wrong">Wrong: <span id="wrong">0</span></span>
+      </div>
+      <div style="font-size:0.95em; color:#767; margin-bottom:8px;">History:</div>
+      <ul id="history-list"></ul>
+    </div>
+  </div>
+  <script>
+    const vocab = [
+      {eng: "bus", esp: "el autobús"}, {eng: "ceremony", esp: "la ceremonia"},
+      {eng: "classmate", esp: "el compañero de clase/la compañera de clase"},
+      {eng: "principal", esp: "el director/la directora"},
+      {eng: "national anthem", esp: "el himno nacional"}, {eng: "exchange", esp: "el intercambio"},
+      {eng: "teacher (particularly in elementary school)", esp: "el maestro/la maestra"},
+      {eng: "teacher", esp: "el profesor/la profesora"}, {eng: "secretary", esp: "el secretario/la secretaria"},
+      {eng: "there is/there are", esp: "hay"}, {eng: "a/an/one", esp: "un/una"}, {eng: "some", esp: "unos/unas"},
+      {eng: "many", esp: "muchos/muchas"}, {eng: "auditorium", esp: "el auditorio"},
+      {eng: "classroom", esp: "el aula; el salón de clase"}, {eng: "library", esp: "la biblioteca"},
+      {eng: "cafeteria", esp: "el comedor/la soda"}, {eng: "soccer field", esp: "el campo de fútbol"},
+      {eng: "high school", esp: "el colegio"}, {eng: "building", esp: "el edificio"},
+      {eng: "gymnasium", esp: "el gimnasio"}, {eng: "laboratory", esp: "el laboratorio"},
+      {eng: "office", esp: "la oficina"}, {eng: "hallway", esp: "el pasillo"}, {eng: "swimming pool", esp: "la piscina"},
+      {eng: "(At) what time?", esp: "¿A qué hora?"}, {eng: "The class begins at...", esp: "La clase empieza a..."},
+      {eng: "The class ends at...", esp: "La clase termina a..."}, {eng: "schedule", esp: "el horario"},
+      {eng: "between classes", esp: "entre clases"}, {eng: "have lunch", esp: "almorzar"},
+      {eng: "help", esp: "ayudar"}, {eng: "walk", esp: "caminar"}, {eng: "sing", esp: "cantar"},
+      {eng: "teach", esp: "enseñar"}, {eng: "study", esp: "estudiar"}, {eng: "wear; to bring", esp: "llevar"},
+      {eng: "participate", esp: "participar"}, {eng: "pay attention", esp: "prestar atención"},
+      {eng: "go back home", esp: "regresar a casa"}, {eng: "take", esp: "tomar"},
+      {eng: "work in teams", esp: "trabajar en equipo"}, {eng: "use", esp: "usar"},
+      {eng: "lunch", esp: "el almuerzo"}, {eng: "science", esp: "la ciencia"},
+      {eng: "social studies", esp: "los estudios sociales"}, {eng: "geography", esp: "la geografía"},
+      {eng: "history", esp: "la historia"}, {eng: "computer science", esp: "la informática"},
+      {eng: "math", esp: "las matemáticas"}, {eng: "chemistry", esp: "la química"},
+      {eng: "break (between classes)", esp: "el recreo/el receso"}, {eng: "in the morning", esp: "por la mañana"},
+      {eng: "at noontime", esp: "al mediodía"}, {eng: "in the afternoon", esp: "por la tarde"},
+      {eng: "in the evening", esp: "por la noche"}, {eng: "scissors", esp: "las tijeras"},
+      {eng: "shirt", esp: "la camisa"}, {eng: "logo; crest; emblem", esp: "el escudo"},
+      {eng: "skirt", esp: "la falda"}, {eng: "pants", esp: "los pantalones"}, {eng: "shoes", esp: "los zapatos"},
+      {eng: "white", esp: "blanco/a"}, {eng: "black", esp: "negro/a"}, {eng: "green", esp: "verde"},
+      {eng: "30", esp: "treinta"}, {eng: "40", esp: "cuarenta"}, {eng: "50", esp: "cincuenta"},
+      {eng: "60", esp: "sesenta"}, {eng: "70", esp: "setenta"}, {eng: "80", esp: "ochenta"},
+      {eng: "90", esp: "noventa"}, {eng: "100", esp: "cien/ciento"}, {eng: "200", esp: "doscientos"},
+      {eng: "I have", esp: "Tengo..."}, {eng: "I need", esp: "Necesito..."}, {eng: "What do you need?", esp: "¿Qué necesitas?"},
+      {eng: "How much does it cost?", esp: "¿Cuánto cuesta?"}, {eng: "How much do they cost?", esp: "¿Cuánto cuestan?"},
+      {eng: "assignment notebook", esp: "la agenda escolar"}, {eng: "pen", esp: "el bolígrafo"},
+      {eng: "calculator", esp: "la calculadora"}, {eng: "folder", esp: "la carpeta"},
+      {eng: "computer", esp: "la computadora"}, {eng: "notebook", esp: "el cuaderno"},
+      {eng: "dictionary", esp: "el diccionario"}, {eng: "school", esp: "la escuela"},
+      {eng: "sheet of paper", esp: "la hoja de papel"},
+      {eng: "pencil; pencils", esp: "el lápiz/los lápices"},
+      {eng: "textbook", esp: "el libro de texto"}, {eng: "backpack", esp: "la mochila"},
+      {eng: "paper", esp: "el papel"}, {eng: "package", esp: "el paquete"}, {eng: "tablet computer", esp: "la táblet"}
+    ];
+    let idx = 0, order = [...Array(vocab.length).keys()].sort(() => Math.random() - 0.5), current = {};
+    let right = 0, wrong = 0;
+    const history = [];
+    let allowInput = true;
+
+    function showQuestion() {
+      allowInput = true;
+      idx++;
+      current = vocab[order[(idx - 1) % vocab.length]];
+      document.getElementById('question').textContent = "Spanish for: " + current.eng;
+      document.getElementById('answer').value = '';
+      document.getElementById('answer').focus();
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('answer').disabled = false;
+    }
+
+    function updateStatsAndHistory() {
+      document.getElementById('right').textContent = right;
+      document.getElementById('wrong').textContent = wrong;
+      let html = '';
+      for (let i = history.length - 1; i >= 0; i--) {
+        const h = history[i];
+        html += `<li class="history-item">
+                    <span class="qeng">${h.eng}</span>
+                    <span class="userans ${h.correct ? 'correct' : 'incorrect'}">${h.your}</span>
+                    <span class="corrans">${h.correct ? '' : '→ ' + h.exp}</span>
+                  </li>`;
+      }
+      document.getElementById('history-list').innerHTML = html;
+    }
+
+    function checkAnswer() {
+      if (!allowInput) return;
+      const userAns = document.getElementById('answer').value.trim();
+      if (userAns === current.esp) {
+        document.getElementById('feedback').textContent = "Correct!";
+        document.getElementById('feedback').style.color = "#118b0a";
+        right++;
+        history.push({eng: current.eng, your: userAns, exp: current.esp, correct: true});
+      } else {
+        document.getElementById('feedback').textContent = "Nope! It's: " + current.esp;
+        document.getElementById('feedback').style.color = "#b8161a";
+        wrong++;
+        history.push({eng: current.eng, your: userAns, exp: current.esp, correct: false});
+      }
+      updateStatsAndHistory();
+      allowInput = false;
+      document.getElementById('answer').disabled = true;
+      setTimeout(showQuestion, 1500);
+    }
+
+    document.getElementById('answer').addEventListener('keyup', function (e) {
+      if (e.key === "Enter") checkAnswer();
+    });
+
+    showQuestion();
+    updateStatsAndHistory();
+  </script>
+</body>
+
+</html>
