@@ -1,13 +1,12 @@
+<!-- Adjust the split index (vocab.slice(80)) if I  add or remove words before Unidad 3.-->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>Spanish Vocab Quiz (pp.120-121)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -30,10 +29,7 @@
         max-width: 99vw;
         padding: 1em 0.4em 0.7em 0.4em;
       }
-
-      h2 {
-        font-size: 1.08em;
-      }
+      h2 { font-size: 1.08em; }
     }
 
     h2 {
@@ -41,8 +37,7 @@
       margin-bottom: 0.4em;
     }
 
-    input[type="text"],
-    button {
+    input[type="text"], button {
       font-size: 1.1em;
       width: 100%;
       padding: 0.6em;
@@ -67,8 +62,7 @@
       transition: background 0.12s;
     }
 
-    button:active,
-    button:focus {
+    button:active, button:focus {
       background: #256029;
     }
 
@@ -104,17 +98,9 @@
       font-size: 1.08em;
     }
 
-    .scorebox .right {
-      color: #1a7e24;
-    }
-
-    .scorebox .wrong {
-      color: #d32f2f;
-    }
-
-    .score-label {
-      font-variant: small-caps;
-    }
+    .scorebox .right { color: #1a7e24; }
+    .scorebox .wrong { color: #d32f2f; }
+    .score-label { font-variant: small-caps; }
 
     #history-list {
       list-style: none;
@@ -133,51 +119,114 @@
       border-bottom: 1px dotted #e8e5c7;
     }
 
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .correct {
-      color: #1b8c18;
-    }
-
-    .incorrect {
-      color: #d32f2f;
-    }
-
-    .qeng {
-      flex: 3;
-    }
-
-    .userans {
-      flex: 2;
-      padding-left: 12px;
-      font-style: italic;
-    }
-
-    .corrans {
-      flex: 2;
-      padding-left: 12px;
-    }
+    .history-item:last-child { border-bottom: none; }
+    .correct { color: #1b8c18; }
+    .incorrect { color: #d32f2f; }
+    .qeng { flex: 3; }
+    .userans { flex: 2; padding-left: 12px; font-style: italic; }
+    .corrans { flex: 2; padding-left: 12px; }
 
     @media (max-width:600px) {
-      .scorebox {
-        font-size: 0.99em;
-      }
+      .scorebox { font-size: 0.99em; }
+      .userans, .corrans { padding-left: 7px; }
+    }
 
-      .userans,
-      .corrans {
-        padding-left: 7px;
-      }
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: #fff;
+      padding: 2em;
+      border-radius: 10px;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .modal button {
+      margin-top: 1em;
+      width: auto;
+    }
+
+    /* Toggle switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1em;
+      font-size: 0.95em;
+    }
+    .toggle-label {
+      margin-right: 0.5em;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #388e3c;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
     }
   </style>
 </head>
 
 <body>
+  <!-- Modal for first-time visitors -->
+  <div id="modal-overlay" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <h3>Update Notice</h3>
+      <p>This quiz has been updated to include the first half of Unidad 3 vocabulary!</p>
+      <button onclick="closeModal()">Got it!</button>
+    </div>
+  </div>
+
   <div id="quiz-box">
+    <div class="toggle-container">
+      <span class="toggle-label">Only new vocabulary:</span>
+      <label class="switch">
+        <input type="checkbox" id="newVocabToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
     <h2>Spanish Vocab Quiz (pp.120-121)</h2>
     <div id="question"></div>
-    <!-- Autocomplete/autocorrect/spellcheck all disabled on answer input -->
     <input type="text" id="answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       placeholder="Type answer using accents if needed" />
     <button onclick="checkAnswer()" style="display:none;">Check Answer</button>
@@ -191,119 +240,204 @@
       <ul id="history-list"></ul>
     </div>
   </div>
-  <script>
-const vocab = [
-  {eng: "have lunch", esp: "almorzar (o → ue)"},
-  {eng: "help", esp: "ayudar"},
-  {eng: "walk", esp: "caminar"},
-  {eng: "sing", esp: "cantar"},
-  {eng: "teach", esp: "enseñar"},
-  {eng: "study", esp: "estudiar"},
-  {eng: "wear; to bring", esp: "llevar"},
-  {eng: "participate", esp: "participar"},
-  {eng: "pay attention", esp: "prestar atención"},
-  {eng: "go back home", esp: "regresar a casa"},
-  {eng: "take", esp: "tomar"},
-  {eng: "work in teams", esp: "trabajar en equipo"},
-  {eng: "use", esp: "usar"},
-  {eng: "in the morning", esp: "por la mañana"},
-  {eng: "at noontime", esp: "al mediodía"},
-  {eng: "in the afternoon", esp: "por la tarde"},
-  {eng: "in the evening", esp: "por la noche"},
-  {eng: "on Saturdays", esp: "los sábados"},
-  {eng: "on Sundays", esp: "los domingos"},
-  {eng: "lunch", esp: "el almuerzo"},
-  {eng: "science", esp: "la ciencia"},
-  {eng: "social studies", esp: "los estudios sociales"},
-  {eng: "geography", esp: "la geografía"},
-  {eng: "history", esp: "la historia"},
-  {eng: "computer science", esp: "la informática"},
-  {eng: "math", esp: "las matemáticas"},
-  {eng: "chemistry", esp: "la química"},
-  {eng: "break (between classes)", esp: "el recreo/el receso"},
-  {eng: "bus", esp: "el autobús"},
-  {eng: "ceremony", esp: "la ceremonia"},
-  {eng: "classmate", esp: "el compañero de clase/la compañera de clase"},
-  {eng: "principal", esp: "el director/la directora"},
-  {eng: "national anthem", esp: "el himno nacional"},
-  {eng: "exchange", esp: "el intercambio"},
-  {eng: "teacher (particularly in elementary school)", esp: "el maestro/la maestra"},
-  {eng: "teacher", esp: "el profesor/la profesora"},
-  {eng: "secretary", esp: "el secretario/la secretaria"},
-  {eng: "(At) what time?", esp: "¿A qué hora?"},
-  {eng: "The class begins at...", esp: "La clase empieza a..."},
-  {eng: "The class ends at...", esp: "La clase termina a..."},
-  {eng: "schedule", esp: "el horario"},
-  {eng: "between classes", esp: "entre clases"},
-  {eng: "I have", esp: "Tengo..."},
-  {eng: "I need", esp: "Necesito..."},
-  {eng: "What do you need?", esp: "¿Qué necesitas?"},
-  {eng: "How much does it cost?", esp: "¿Cuánto cuesta?"},
-  {eng: "How much do they cost?", esp: "¿Cuánto cuestan?"},
-  {eng: "assignment notebook", esp: "la agenda escolar"},
-  {eng: "pen", esp: "el bolígrafo"},
-  {eng: "calculator", esp: "la calculadora"},
-  {eng: "folder", esp: "la carpeta"},
-  {eng: "computer", esp: "la computadora"},
-  {eng: "notebook", esp: "el cuaderno"},
-  {eng: "dictionary", esp: "el diccionario"},
-  {eng: "school", esp: "la escuela"},
-  {eng: "sheet of paper", esp: "la hoja de papel"},
-  {eng: "pencil/pencils", esp: "el lápiz/los lápices"},
-  {eng: "textbook", esp: "el libro de texto"},
-  {eng: "backpack", esp: "la mochila"},
-  {eng: "paper", esp: "el papel"},
-  {eng: "package", esp: "el paquete"},
-  {eng: "tablet computer", esp: "la tablet"},
-  {eng: "scissors", esp: "las tijeras"},
-  {eng: "shirt", esp: "la camisa"},
-  {eng: "logo; crest; emblem", esp: "el escudo"},
-  {eng: "skirt", esp: "la falda"},
-  {eng: "pants", esp: "los pantalones"},
-  {eng: "shoes", esp: "los zapatos"},
-  {eng: "white", esp: "blanco/a"},
-  {eng: "black", esp: "negro/a"},
-  {eng: "green", esp: "verde"},
-  {eng: "30", esp: "treinta"},
-  {eng: "40", esp: "cuarenta"},
-  {eng: "50", esp: "cincuenta"},
-  {eng: "60", esp: "sesenta"},
-  {eng: "70", esp: "setenta"},
-  {eng: "80", esp: "ochenta"},
-  {eng: "90", esp: "noventa"},
-  {eng: "100", esp: "cien/ciento"},
-  {eng: "200", esp: "doscientos"},
-  {eng: "1,000", esp: "mil"},
-  {eng: "there is/there are", esp: "hay"},
-  {eng: "a/an/one", esp: "un/una"},
-  {eng: "some", esp: "unos/unas"},
-  {eng: "many", esp: "muchos/muchas"},
-  {eng: "auditorium", esp: "el auditorio"},
-  {eng: "classroom", esp: "el aula; el salón de clase"},
-  {eng: "library", esp: "la biblioteca"},
-  {eng: "cafeteria", esp: "el comedor/la soda (C.R.)"},
-  {eng: "soccer field", esp: "el campo de fútbol"},
-  {eng: "high school", esp: "el colegio (C.R.)"},
-  {eng: "building", esp: "el edificio"},
-  {eng: "gymnasium", esp: "el gimnasio"},
-  {eng: "laboratory", esp: "el laboratorio"},
-  {eng: "office", esp: "la oficina"},
-  {eng: "hallway", esp: "el pasillo"},
-  {eng: "swimming pool", esp: "la piscina"},
-  // Additional from second list if not matched above:
-  {eng: "high school", esp: "el colegio"},
-  {eng: "tablet computer", esp: "la táblet"},
-];
 
-    let idx = 0, order = [...Array(vocab.length).keys()].sort(() => Math.random() - 0.5), current = {};
+  <script>
+    // Vocabulary list (new words start after this comment)
+    const vocab = [
+      {eng: "have lunch", esp: "almorzar (o → ue)"},
+      {eng: "help", esp: "ayudar"},
+      {eng: "walk", esp: "caminar"},
+      {eng: "sing", esp: "cantar"},
+      {eng: "teach", esp: "enseñar"},
+      {eng: "study", esp: "estudiar"},
+      {eng: "wear; to bring", esp: "llevar"},
+      {eng: "participate", esp: "participar"},
+      {eng: "pay attention", esp: "prestar atención"},
+      {eng: "go back home", esp: "regresar a casa"},
+      {eng: "take", esp: "tomar"},
+      {eng: "work in teams", esp: "trabajar en equipo"},
+      {eng: "use", esp: "usar"},
+      {eng: "in the morning", esp: "por la mañana"},
+      {eng: "at noontime", esp: "al mediodía"},
+      {eng: "in the afternoon", esp: "por la tarde"},
+      {eng: "in the evening", esp: "por la noche"},
+      {eng: "on Saturdays", esp: "los sábados"},
+      {eng: "on Sundays", esp: "los domingos"},
+      {eng: "lunch", esp: "el almuerzo"},
+      {eng: "science", esp: "la ciencia"},
+      {eng: "social studies", esp: "los estudios sociales"},
+      {eng: "geography", esp: "la geografía"},
+      {eng: "history", esp: "la historia"},
+      {eng: "computer science", esp: "la informática"},
+      {eng: "math", esp: "las matemáticas"},
+      {eng: "chemistry", esp: "la química"},
+      {eng: "break (between classes)", esp: "el recreo/el receso"},
+      {eng: "bus", esp: "el autobús"},
+      {eng: "ceremony", esp: "la ceremonia"},
+      {eng: "classmate", esp: "el compañero de clase/la compañera de clase"},
+      {eng: "principal", esp: "el director/la directora"},
+      {eng: "national anthem", esp: "el himno nacional"},
+      {eng: "exchange", esp: "el intercambio"},
+      {eng: "teacher (particularly in elementary school)", esp: "el maestro/la maestra"},
+      {eng: "teacher", esp: "el profesor/la profesora"},
+      {eng: "secretary", esp: "el secretario/la secretaria"},
+      {eng: "(At) what time?", esp: "¿A qué hora?"},
+      {eng: "The class begins at...", esp: "La clase empieza a..."},
+      {eng: "The class ends at...", esp: "La clase termina a..."},
+      {eng: "schedule", esp: "el horario"},
+      {eng: "between classes", esp: "entre clases"},
+      {eng: "I have", esp: "Tengo..."},
+      {eng: "I need", esp: "Necesito..."},
+      {eng: "What do you need?", esp: "¿Qué necesitas?"},
+      {eng: "How much does it cost?", esp: "¿Cuánto cuesta?"},
+      {eng: "How much do they cost?", esp: "¿Cuánto cuestan?"},
+      {eng: "assignment notebook", esp: "la agenda escolar"},
+      {eng: "pen", esp: "el bolígrafo"},
+      {eng: "calculator", esp: "la calculadora"},
+      {eng: "folder", esp: "la carpeta"},
+      {eng: "computer", esp: "la computadora"},
+      {eng: "notebook", esp: "el cuaderno"},
+      {eng: "dictionary", esp: "el diccionario"},
+      {eng: "school", esp: "la escuela"},
+      {eng: "sheet of paper", esp: "la hoja de papel"},
+      {eng: "pencil/pencils", esp: "el lápiz/los lápices"},
+      {eng: "textbook", esp: "el libro de texto"},
+      {eng: "backpack", esp: "la mochila"},
+      {eng: "paper", esp: "el papel"},
+      {eng: "package", esp: "el paquete"},
+      {eng: "tablet computer", esp: "la tablet"},
+      {eng: "scissors", esp: "las tijeras"},
+      {eng: "shirt", esp: "la camisa"},
+      {eng: "logo; crest; emblem", esp: "el escudo"},
+      {eng: "skirt", esp: "la falda"},
+      {eng: "pants", esp: "los pantalones"},
+      {eng: "shoes", esp: "los zapatos"},
+      {eng: "white", esp: "blanco/a"},
+      {eng: "black", esp: "negro/a"},
+      {eng: "green", esp: "verde"},
+      {eng: "30", esp: "treinta"},
+      {eng: "40", esp: "cuarenta"},
+      {eng: "50", esp: "cincuenta"},
+      {eng: "60", esp: "sesenta"},
+      {eng: "70", esp: "setenta"},
+      {eng: "80", esp: "ochenta"},
+      {eng: "90", esp: "noventa"},
+      {eng: "100", esp: "cien/ciento"},
+      {eng: "200", esp: "doscientos"},
+      {eng: "1,000", esp: "mil"},
+      {eng: "there is/there are", esp: "hay"},
+      {eng: "a/an/one", esp: "un/una"},
+      {eng: "some", esp: "unos/unas"},
+      {eng: "many", esp: "muchos/muchas"},
+      {eng: "auditorium", esp: "el auditorio"},
+      {eng: "classroom", esp: "el aula; el salón de clase"},
+      {eng: "library", esp: "la biblioteca"},
+      {eng: "cafeteria", esp: "el comedor/la soda (C.R.)"},
+      {eng: "soccer field", esp: "el campo de fútbol"},
+      {eng: "high school", esp: "el colegio (C.R.)"},
+      {eng: "building", esp: "el edificio"},
+      {eng: "gymnasium", esp: "el gimnasio"},
+      {eng: "laboratory", esp: "el laboratorio"},
+      {eng: "office", esp: "la oficina"},
+      {eng: "hallway", esp: "el pasillo"},
+      {eng: "swimming pool", esp: "la piscina"},
+      {eng: "high school", esp: "el colegio"},
+      {eng: "tablet computer", esp: "la táblet"},
+      // NEW VOCABULARY STARTS HERE (Unidad 3)
+      {eng: "This is my family", esp: "Esta es mi familia"},
+      {eng: "Who are they?", esp: "¿Quiénes son?"},
+      {eng: "grandfather/grandmother", esp: "el/la abuelo/a"},
+      {eng: "surname", esp: "el apellido"},
+      {eng: "baby", esp: "el/la bebé"},
+      {eng: "great-grandfather/mother", esp: "el/la bisabuelo/a"},
+      {eng: "husband/wife", esp: "el/la esposo/a"},
+      {eng: "cat", esp: "el gato"},
+      {eng: "son/daughter", esp: "el/la hijo/a"},
+      {eng: "brother/sister", esp: "el/la hermano/a"},
+      {eng: "mother", esp: "la madre"},
+      {eng: "pet", esp: "la mascota"},
+      {eng: "grandson/granddaughter", esp: "el/la nieto/a"},
+      {eng: "(given) name", esp: "el nombre"},
+      {eng: "father", esp: "el padre"},
+      {eng: "the parents", esp: "los padres"},
+      {eng: "dog", esp: "el perro"},
+      {eng: "cousin", esp: "el/la primo/a"},
+      {eng: "nephew/niece", esp: "el/la sobrino/a"},
+      {eng: "uncle/aunt", esp: "el/la tío/a"},
+      {eng: "What are they like?", esp: "¿Cómo son?"},
+      {eng: "tall", esp: "alto/a"},
+      {eng: "nice; kind", esp: "amable"},
+      {eng: "thin", esp: "delgado/a"},
+      {eng: "fat", esp: "gordo/a"},
+      {eng: "big", esp: "grande"},
+      {eng: "young", esp: "joven"},
+      {eng: "small", esp: "pequeño/a"},
+      {eng: "old", esp: "viejo/a"},
+      {eng: "happy", esp: "alegre"},
+      {eng: "quiet", esp: "callado/a"},
+      {eng: "fun", esp: "divertido/a"},
+      {eng: "polite", esp: "educado/a"},
+      {eng: "funny; comical", esp: "gracioso/a"},
+      {eng: "honest", esp: "honesto/a"},
+      {eng: "impatient", esp: "impaciente"},
+      {eng: "older (than)", esp: "mayor (que)"},
+      {eng: "younger (than)", esp: "menor (que)"},
+      {eng: "organized", esp: "ordenado/a"},
+      {eng: "serious", esp: "serio/a"},
+      {eng: "friendly", esp: "simpático/a"},
+      {eng: "unmarried; single", esp: "soltero/a"},
+      {eng: "talented", esp: "talentoso/a"},
+      {eng: "He is handsome/ She is pretty", esp: "Es guapo/a"},
+      {eng: "He/She is dark complected", esp: "Es moreno/a"},
+      {eng: "He/she has blond hair", esp: "Tiene el pelo rubio"},
+      {eng: "He/she has dark hair", esp: "Tiene el pelo oscuro"},
+      {eng: "He/she is blond(e)", esp: "Es rubio/a"},
+      {eng: "He/she is a red-head", esp: "Es pelirrojo/a"},
+      {eng: "He/she has . . eyes", esp: "Tiene los ojos . ."},
+      {eng: "blue", esp: "azul"},
+      {eng: "brown", esp: "castaño/a"},
+      {eng: "brown", esp: "de color café"},
+      {eng: "black", esp: "negro/a"},
+      {eng: "green", esp: "verde"}
+    ];
+
+    // Split vocab into old and new (Unidad 3 starts here)
+    const oldVocab = vocab.slice(0, 80); // Adjust index if needed
+    const newVocab = vocab.slice(80);
+
+    let idx = 0, order = [], current = {};
     let right = 0, wrong = 0;
     const history = [];
     let allowInput = true;
 
+    // Show modal on first visit only
+    function showUpdateModal() {
+      if (!localStorage.getItem('seenUpdateModal')) {
+        document.getElementById('modal-overlay').style.display = 'flex';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').style.display = 'none';
+      localStorage.setItem('seenUpdateModal', 'true');
+    }
+
+    // Toggle for new vocabulary
+    function updateVocabList() {
+      const useNewOnly = document.getElementById('newVocabToggle').checked;
+      const list = useNewOnly ? newVocab : vocab;
+      order = [...Array(list.length).keys()].sort(() => Math.random() - 0.5);
+      idx = 0;
+      showQuestion();
+    }
+
+    document.getElementById('newVocabToggle').addEventListener('change', updateVocabList);
+
     function showQuestion() {
       allowInput = true;
+      const list = document.getElementById('newVocabToggle').checked ? newVocab : vocab;
       idx++;
-      current = vocab[order[(idx - 1) % vocab.length]];
+      current = list[order[(idx - 1) % list.length]];
       document.getElementById('question').textContent = "Spanish for: " + current.eng;
       document.getElementById('answer').value = '';
       document.getElementById('answer').focus();
@@ -350,9 +484,10 @@ const vocab = [
       if (e.key === "Enter") checkAnswer();
     });
 
-    showQuestion();
+    // Initialize
+    showUpdateModal();
+    updateVocabList();
     updateStatsAndHistory();
   </script>
 </body>
-
 </html>
