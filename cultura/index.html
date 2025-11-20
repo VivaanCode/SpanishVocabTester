@@ -22,8 +22,14 @@
       padding: 0 12px 24px 12px;
       box-sizing: border-box;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      grid-gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-gap: 18px;
+    }
+
+    @media (max-width: 680px) {
+      .cards-wrapper {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
     .cultura-card {
@@ -31,7 +37,7 @@
       background: #f6f0de;
       border-radius: 10px;
       box-shadow: 0 2px 16px 0 #bbb;
-      padding: 1.4em 1.6em 1.2em 1.6em;
+      padding: 1.35em 1.55em 1.2em 1.55em;
       box-sizing: border-box;
       line-height: 1.45;
       color: #2b2416;
@@ -39,14 +45,14 @@
 
     .cultura-card h2 {
       margin-top: 0;
-      margin-bottom: 0.6em;
-      font-size: 1.15em;
+      margin-bottom: 0.55em;
+      font-size: 1.12em;
     }
 
     .cultura-card p {
       margin-top: 0;
       margin-bottom: 0.7em;
-      font-size: 0.98em;
+      font-size: 0.97em;
     }
 
     .unidad-label {
@@ -62,29 +68,22 @@
       letter-spacing: 0.03em;
     }
 
-    /* For the "Familias icónicas" image layout */
-    .cultura-flex {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
+    .fullscreen-btn {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-size: 0.78em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      background: #3c6e71;
+      color: #fff;
+      cursor: pointer;
+      outline: none;
     }
 
-    .cultura-text {
-      flex: 1 1 auto;
-    }
-
-    .cultura-photo {
-      flex: 0 0 120px;
-      text-align: right;
-      font-size: 0.7em;
-      color: #444;
-    }
-
-    .cultura-photo img {
-      max-width: 120px;
-      border-radius: 4px;
-      display: block;
-      margin-bottom: 2px;
+    .fullscreen-btn:hover {
+      background: #335c5f;
     }
 
     .cultura-section-title {
@@ -97,21 +96,84 @@
       font-style: italic;
     }
 
+    /* Modal overlay */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      max-width: 780px;
+      width: 100%;
+      max-height: 95vh;
+      overflow-y: auto;
+      background: #f6f0de;
+      border-radius: 12px;
+      box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
+      padding: 1.6em 1.8em 1.4em 1.8em;
+      position: relative;
+    }
+
+    .modal-card h2 {
+      margin-top: 0;
+      margin-bottom: 0.55em;
+      font-size: 1.2em;
+    }
+
+    .modal-card p {
+      margin-top: 0;
+      margin-bottom: 0.7em;
+      font-size: 1em;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      border: none;
+      background: transparent;
+      color: #333;
+      font-size: 1.4em;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-unidad-label {
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      background: #c28b3b;
+      color: #fff;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 0.78em;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
     @media (max-width: 600px) {
       .cultura-card {
-        padding: 1.1em 1em 1em 1em;
+        padding: 1.1em 1.1em 1.15em 1.1em;
       }
 
       .cultura-card h2 {
         font-size: 1.05em;
       }
 
-      .cultura-flex {
-        flex-direction: column;
-      }
-
-      .cultura-photo {
-        text-align: left;
+      .modal-card {
+        padding: 1.35em 1.35em 1.25em 1.35em;
       }
     }
   </style>
@@ -120,48 +182,41 @@
 <body>
   <div class="cards-wrapper">
 
-    <!-- Card 1: Nuevos modelos de familia (from previous message) -->
-    <div class="cultura-card">
+    <!-- Card 1: Nuevos modelos de familia -->
+    <article class="cultura-card" data-card-id="card-nuevos-modelos">
       <span class="unidad-label">Unidad 3</span>
+      <button class="fullscreen-btn" type="button" data-fullscreen="card-nuevos-modelos">Fullscreen</button>
       <h2>Práctica cultural: Nuevos modelos de familia</h2>
       <p>From 1975 to the present, Spain transformed itself from a dictatorship to democracy and a member of the European Union (see timeline in the chapter opener). The traditional Catholic family of the 20th century is less common than before, and Spanish families resemble the structures we find in other European countries and the U.S. Divorce and remarriage are more frequent, and same-sex marriage is legal.</p>
       <p><em>Familias monoparentales</em> (single-parent families) are growing in number, and <em>parejas de hecho</em> (unmarried couples) commonly head households and raise children. Spanish has precise or legal vocabulary for the complex relationships in these new family models (left column below), but people tend to use labels that show the emotional relationship (right column):</p>
-
       <p>
         <strong>el padrastro</strong> (step-father) – el esposo de mi madre<br>
         <strong>la madrastra</strong> (step-mother) – la esposa de mi padre<br>
         <strong>la pareja de hecho</strong> (partner) – la pareja de mi padre/madre<br>
         <strong>el hermanastro / la hermanastra</strong> (step-brother/step-sister; half-brother/half-sister) – mis hermanos / los hijos de mi padre/madre
       </p>
-    </div>
+    </article>
 
     <!-- Card 2: Los apellidos -->
-    <div class="cultura-card">
+    <article class="cultura-card" data-card-id="card-apellidos">
       <span class="unidad-label">Unidad 3</span>
+      <button class="fullscreen-btn" type="button" data-fullscreen="card-apellidos">Fullscreen</button>
       <h2>Práctica cultural: Los apellidos</h2>
       <p>In Spain and in many Latin American countries it is common to give a child two given names (nombres). For example, a girl named María Paula García Elizondo would go by “María Paula”, and her nickname might be based on both names, “Maripau.” María Paula’s given names will be accompanied by her two surnames (apellidos)—first her father’s family name (García, el apellido paterno), then her mother’s (Elizondo, el apellido materno).</p>
-      <p class="cultura-section-title">Conexiones</p>
-      <p>Do you know of anyone who uses both their mother’s and father’s last names? How is their complete name written? What local customs do you know about regarding how people get their names?</p>
-    </div>
+    </article>
 
     <!-- Card 3: Familias icónicas -->
-    <div class="cultura-card">
+    <article class="cultura-card" data-card-id="card-familias-iconicas">
       <span class="unidad-label">Unidad 3</span>
+      <button class="fullscreen-btn" type="button" data-fullscreen="card-familias-iconicas">Fullscreen</button>
       <h2>Perspectiva cultural: Familias icónicas</h2>
-      <div class="cultura-flex">
-        <div class="cultura-text">
-          <p>Esta es la familia real (royal family) de España. Felipe VI es rey de España desde (since) 2014. Hay cuatro personas en la familia del rey. Felipe es el padre. Es delgado y muy alto. Su esposa se llama Letizia. Es joven, rubia y atlética. Tienen dos hijas, Leonor y Sofía. La abuela de las niñas también está en la foto, y también se llama Sofía.</p>
-        </div>
-        <div class="cultura-photo">
-          <img src="image.jpg" alt="Familia real de España">
-          <span>zuma / Alamy</span>
-        </div>
-      </div>
-    </div>
+      <p>Esta es la familia real (royal family) de España. Felipe VI es rey de España desde (since) 2014. Hay cuatro personas en la familia del rey. Felipe es el padre. Es delgado y muy alto. Su esposa se llama Letizia. Es joven, rubia y atlética. Tienen dos hijas, Leonor y Sofía. La abuela de las niñas también está en la foto, y también se llama Sofía.</p>
+    </article>
 
     <!-- Card 4: Los espacios donde vivimos -->
-    <div class="cultura-card">
+    <article class="cultura-card" data-card-id="card-espacios">
       <span class="unidad-label">Unidad 3</span>
+      <button class="fullscreen-btn" type="button" data-fullscreen="card-espacios">Fullscreen</button>
       <h2>Práctica cultural: Los espacios donde vivimos</h2>
       <p>The names of the parts of a house vary across the Spanish-speaking world:</p>
 
@@ -180,23 +235,79 @@
         la primera (first) planta second floor</p>
 
       <p>In some cases the variants are regional synonyms, but in others they reveal interesting details about the local culture. For example, la yarda in U.S. Spanish refers to a typical North American suburban yard. Since most Spaniards live in pisos, with no outdoor green space of their own, el jardín in Spain suggests a public park or common garden area. In Costa Rica or Venezuela, el solar is the green space around a freestanding house.</p>
-    </div>
+    </article>
 
     <!-- Card 5: Salir del “nido del hogar” -->
-    <div class="cultura-card">
+    <article class="cultura-card" data-card-id="card-nido-hogar">
       <span class="unidad-label">Unidad 3</span>
+      <button class="fullscreen-btn" type="button" data-fullscreen="card-nido-hogar">Fullscreen</button>
       <h2>Práctica cultural: Salir del “nido del hogar” (Leaving the nest)</h2>
       <p>En muchos países hispanohablantes, los hijos pueden vivir en casa de sus padres hasta (until) terminar la universidad. No hay mucha presión por salir del hogar e independizarse. En muchas ocasiones los hijos de 30 años todavía viven en casa.</p>
-    </div>
+    </article>
 
     <!-- Card 6: Intercambios familiares -->
-    <div class="cultura-card">
+    <article class="cultura-card" data-card-id="card-intercambios">
       <span class="unidad-label">Unidad 3</span>
+      <button class="fullscreen-btn" type="button" data-fullscreen="card-intercambios">Fullscreen</button>
       <h2>Perspectiva cultural: Intercambios familiares</h2>
       <p>Muchas familias españolas valoran las oportunidades de aprender otros idiomas y otras culturas. Algunas familias viajan durante (during) las vacaciones a otros países para una experiencia intercultural. Otras familias les dan a los hijos la experiencia de estudiar o vivir en otro país, o son anfitriones (hosts) de un joven extranjero en su hogar. La familia anfitriona comparte (shares) con el estudiante su cultura y su idioma. El estudiante se convierte (becomes) en un miembro más de la familia, y se forman relaciones para toda la vida (lifetime), una conexión entre dos familias, dos pueblos y dos países.</p>
-    </div>
+    </article>
 
   </div>
+
+  <!-- Modal overlay (reused for all cards) -->
+  <div class="modal-overlay" id="card-modal">
+    <div class="modal-card">
+      <span class="modal-unidad-label">Unidad 3</span>
+      <button class="modal-close" type="button" aria-label="Close">&times;</button>
+      <div id="modal-content-inner"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const modal = document.getElementById('card-modal');
+      const modalInner = document.getElementById('modal-content-inner');
+      const closeBtn = modal.querySelector('.modal-close');
+
+      function openModal(cardId) {
+        const card = document.querySelector('[data-card-id="' + cardId + '"]');
+        if (!card) return;
+        // Clone inner content (excluding Unidad / Fullscreen button)
+        const clone = card.cloneNode(true);
+        [...clone.querySelectorAll('.unidad-label, .fullscreen-btn')].forEach(el => el.remove());
+        modalInner.innerHTML = '';
+        while (clone.firstChild) {
+          modalInner.appendChild(clone.firstChild);
+        }
+        modal.classList.add('active');
+      }
+
+      function closeModal() {
+        modal.classList.remove('active');
+      }
+
+      document.addEventListener('click', function (e) {
+        const fsBtn = e.target.closest('[data-fullscreen]');
+        if (fsBtn) {
+          const id = fsBtn.getAttribute('data-fullscreen');
+          openModal(id);
+        }
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeModal();
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>
