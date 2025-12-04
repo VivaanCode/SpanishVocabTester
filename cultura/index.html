@@ -2,311 +2,1317 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Cultura – Unidad 3</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Cultura</title>
   <style>
-    html,
-    body {
+    :root {
+      --bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --accent: #c62828;
+      --accent-light: #fbe9e7;
+      --text: #222222;
+      --muted: #666666;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --radius: 14px;
+      --transition: 0.25s ease;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      height: 100%;
-      width: 100%;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f3efe8;
     }
 
-    .cards-wrapper {
-      max-width: 960px;
-      margin: 20px auto;
-      padding: 0 12px 24px 12px;
-      box-sizing: border-box;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-gap: 18px;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #fff, #eceff1);
+      color: var(--text);
+      padding: 2.5rem 1.5rem 3rem;
+      line-height: 1.6;
     }
 
-    @media (max-width: 680px) {
-      .cards-wrapper {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .cultura-card {
-      position: relative;
-      background: #f6f0de;
-      border-radius: 10px;
-      box-shadow: 0 2px 16px 0 #bbb;
-      padding: 1.35em 1.55em 1.2em 1.55em;
-      box-sizing: border-box;
-      line-height: 1.45;
-      color: #2b2416;
-    }
-
-    .cultura-card h2 {
-      margin-top: 0;
-      margin-bottom: 0.55em;
-      font-size: 1.12em;
-    }
-
-    .cultura-card p {
-      margin-top: 0;
-      margin-bottom: 0.7em;
-      font-size: 0.97em;
-    }
-
-    .unidad-label {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      background: #c28b3b;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.78em;
-      font-weight: 600;
+    h1 {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      font-size: 2rem;
       letter-spacing: 0.03em;
     }
 
-    .fullscreen-btn {
-      position: absolute;
-      left: 10px;
-      bottom: 10px;
-      font-size: 0.78em;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: none;
-      background: #3c6e71;
-      color: #fff;
-      cursor: pointer;
-      outline: none;
+    p.subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
     }
 
-    .fullscreen-btn:hover {
-      background: #335c5f;
+    .grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.75rem;
+      align-items: stretch;
     }
 
-    .cultura-section-title {
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 1px solid #eceff1;
+      cursor: default;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+      border-color: rgba(198, 40, 40, 0.25);
+    }
+
+    .card-header {
+      padding: 0.85rem 1.1rem 0.6rem;
+      border-bottom: 1px solid #eceff1;
+      background: linear-gradient(135deg, var(--accent-light), #ffffff);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .card-title {
       font-weight: 600;
-      margin-top: 0.8em;
-      margin-bottom: 0.2em;
+      font-size: 1rem;
     }
 
-    .cultura-subtitle {
+    .page-tag {
+      font-size: 0.8rem;
+      padding: 0.1rem 0.6rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .card-body {
+      padding: 1rem 1.1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      position: relative;
+    }
+
+    .fullscreen-chip {
+      align-self: flex-end;
+      margin-bottom: 0.3rem;
+      font-size: 0.75rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .fullscreen-chip span.icon {
+      font-size: 0.9rem;
+    }
+
+    .chart-note {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.4rem;
+      font-size: 0.82rem;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th,
+    td {
+      padding: 0.35rem 0.4rem;
+      border: 1px solid #e0e0e0;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    .question-list {
+      list-style: decimal;
+      padding-left: 1.1rem;
+      font-size: 0.93rem;
+    }
+
+    .question-list li {
+      margin-bottom: 0.35rem;
+    }
+
+    .map-wrapper,
+    .image-row,
+    .image-wrapper {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #eceff1;
+      background: #000;
+    }
+
+    .map-wrapper img,
+    .image-row img,
+    .image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .image-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0;
+      background: #000;
+    }
+
+    .image-caption,
+    .caption {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 0.35rem;
+      color: var(--muted);
+    }
+
+    .text-block {
+      font-size: 0.9rem;
+    }
+
+    .text-block p {
+      margin-bottom: 0.55rem;
+    }
+
+    .text-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    .text-italic {
       font-style: italic;
     }
 
-    /* Modal overlay */
+    /* Fullscreen / zoomed card */
+    .card.is-fullscreen {
+      position: fixed;
+      inset: 1.5rem;
+      margin: 0;
+      z-index: 1000;
+      max-width: none;
+      height: calc(100vh - 3rem);
+      /* fill viewport minus margins */
+      overflow: hidden;
+      /* IMPORTANT: body, not card, scrolls */
+      transform: none;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      border-color: rgba(0, 0, 0, 0.2);
+      background: #ffffff;
+    }
 
-    .modal-overlay {
+
+    .card.is-fullscreen .card-body {
+      flex: 1 1 auto;
+      /* let it grow inside the card */
+      overflow-y: auto;
+      /* vertical scrolling for tall content */
+    }
+
+
+
+
+    /* Dark overlay behind fullscreen card */
+    .fullscreen-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 10px;
-      box-sizing: border-box;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 900;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
     }
 
-    .modal-overlay.active {
-      display: flex;
+    .fullscreen-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    .modal-card {
-      max-width: 780px;
-      width: 100%;
-      max-height: 95vh;
-      overflow-y: auto;
-      background: #f6f0de;
-      border-radius: 12px;
-      box-shadow: 0 4px 26px rgba(0, 0, 0, 0.5);
-      padding: 1.6em 1.8em 1.4em 1.8em;
-      position: relative;
-    }
-
-    .modal-card h2 {
-      margin-top: 0;
-      margin-bottom: 0.55em;
-      font-size: 1.2em;
-    }
-
-    .modal-card p {
-      margin-top: 0;
-      margin-bottom: 0.7em;
-      font-size: 1em;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      border: none;
-      background: transparent;
-      color: #333;
-      font-size: 1.4em;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .modal-unidad-label {
-      position: absolute;
-      top: 10px;
-      left: 14px;
-      background: #c28b3b;
-      color: #fff;
-      padding: 4px 9px;
-      border-radius: 6px;
-      font-size: 0.78em;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-
-    @media (max-width: 600px) {
-      .cultura-card {
-        padding: 1.1em 1.1em 1.15em 1.1em;
+    @media (max-width: 700px) {
+      body {
+        padding: 1.5rem 1rem 2.5rem;
       }
 
-      .cultura-card h2 {
-        font-size: 1.05em;
-      }
-
-      .modal-card {
-        padding: 1.35em 1.35em 1.25em 1.35em;
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="cards-wrapper">
+  <h1>Cultura</h1>
+  <p class="subtitle">All cultura required for the Semester 1 Final exam.</p>
 
-    <!-- Card 1: Nuevos modelos de familia -->
-    <article class="cultura-card" data-card-id="card-nuevos-modelos">
-      <span class="unidad-label">Unidad 3</span>
-      <button class="fullscreen-btn" type="button" data-fullscreen="card-nuevos-modelos">Fullscreen</button>
-      <h2>Práctica cultural: Nuevos modelos de familia</h2>
-      <p>From 1975 to the present, Spain transformed itself from a dictatorship to democracy and a member of the European Union (see timeline in the chapter opener). The traditional Catholic family of the 20th century is less common than before, and Spanish families resemble the structures we find in other European countries and the U.S. Divorce and remarriage are more frequent, and same-sex marriage is legal.</p>
-      <p><em>Familias monoparentales</em> (single-parent families) are growing in number, and <em>parejas de hecho</em> (unmarried couples) commonly head households and raise children. Spanish has precise or legal vocabulary for the complex relationships in these new family models (left column below), but people tend to use labels that show the emotional relationship (right column):</p>
-      <p>
-        <strong>el padrastro</strong> (step-father) – el esposo de mi madre<br>
-        <strong>la madrastra</strong> (step-mother) – la esposa de mi padre<br>
-        <strong>la pareja de hecho</strong> (partner) – la pareja de mi padre/madre<br>
-        <strong>el hermanastro / la hermanastra</strong> (step-brother/step-sister; half-brother/half-sister) – mis hermanos / los hijos de mi padre/madre
-      </p>
+  <div class="grid">
+    <!-- Card 1: El español en el mundo, p.6 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">El español en el mundo</div>
+        <div class="page-tag">U0 · Página 6</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <p class="chart-note"><strong>10 idiomas más usados en Internet</strong> (values approximate, in millions of
+          users):</p>
+        <table aria-label="10 idiomas más usados en Internet">
+          <thead>
+            <tr>
+              <th>Idioma</th>
+              <th>Usuarios (millones)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Inglés</td>
+              <td>536,6</td>
+            </tr>
+            <tr>
+              <td>Chino (mandarín)</td>
+              <td>444,9</td>
+            </tr>
+            <tr>
+              <td>Español</td>
+              <td>153,3</td>
+            </tr>
+            <tr>
+              <td>Japonés</td>
+              <td>99,1</td>
+            </tr>
+            <tr>
+              <td>Portugués</td>
+              <td>82,5</td>
+            </tr>
+            <tr>
+              <td>Alemán</td>
+              <td>72,5</td>
+            </tr>
+            <tr>
+              <td>Árabe</td>
+              <td>65,4</td>
+            </tr>
+            <tr>
+              <td>Francés</td>
+              <td>59,8</td>
+            </tr>
+            <tr>
+              <td>Ruso</td>
+              <td>59,7</td>
+            </tr>
+            <tr>
+              <td>Coreano</td>
+              <td>39,4</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ol class="question-list">
+          <li>What does this infographic show us?</li>
+          <li>Where does Spanish rank in this chart?</li>
+          <li>What do the numbers represent?</li>
+          <li>How are numbers written differently in Spanish?</li>
+          <li>Which four languages on the list are official languages of countries in the Americas?</li>
+        </ol>
+      </div>
     </article>
 
-    <!-- Card 2: Los apellidos -->
-    <article class="cultura-card" data-card-id="card-apellidos">
-      <span class="unidad-label">Unidad 3</span>
-      <button class="fullscreen-btn" type="button" data-fullscreen="card-apellidos">Fullscreen</button>
-      <h2>Práctica cultural: Los apellidos</h2>
-      <p>In Spain and in many Latin American countries it is common to give a child two given names (nombres). For example, a girl named María Paula García Elizondo would go by “María Paula”, and her nickname might be based on both names, “Maripau.” María Paula’s given names will be accompanied by her two surnames (apellidos)—first her father’s family name (García, el apellido paterno), then her mother’s (Elizondo, el apellido materno).</p>
+    <!-- Card 2: El ranking de los países hispanohablantes, p.7 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">El ranking de los países hispanohablantes</div>
+        <div class="page-tag">U0 · Página 7</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <table aria-label="Ranking de los países hispanohablantes">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>País</th>
+              <th>El español = primer idioma</th>
+              <th>Número de personas que hablan español</th>
+              <th>% que habla español</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>México</td>
+              <td>Sí</td>
+              <td>115.148.235</td>
+              <td>98,5%</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Estados Unidos</td>
+              <td>No</td>
+              <td>52.588.880</td>
+              <td>16,7%</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Colombia</td>
+              <td>Sí</td>
+              <td>46.643.840</td>
+              <td>99,2%</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>España</td>
+              <td>Sí</td>
+              <td>46.494.819</td>
+              <td>98,8%</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Argentina</td>
+              <td>Sí</td>
+              <td>41.410.454</td>
+              <td>99,4%</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Venezuela</td>
+              <td>Sí</td>
+              <td>29.976.908</td>
+              <td>98,8%</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Perú</td>
+              <td>Sí</td>
+              <td>26.391.475</td>
+              <td>86,6%</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Chile</td>
+              <td>Sí</td>
+              <td>17.433.917</td>
+              <td>99,3%</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>Ecuador</td>
+              <td>Sí</td>
+              <td>15.166.260</td>
+              <td>98,7%</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>Guatemala</td>
+              <td>Sí</td>
+              <td>13.338.764</td>
+              <td>86,4%</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td>Brasil</td>
+              <td>No</td>
+              <td>12.468.380</td>
+              <td>6,5%</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td>Cuba</td>
+              <td>Sí</td>
+              <td>11.176.536</td>
+              <td>99,4%</td>
+            </tr>
+            <tr>
+              <td>13</td>
+              <td>República Dominicana</td>
+              <td>Sí</td>
+              <td>10.267.764</td>
+              <td>99,6%</td>
+            </tr>
+            <tr>
+              <td>14</td>
+              <td>Bolivia</td>
+              <td>Sí</td>
+              <td>9.164.589</td>
+              <td>87,9%</td>
+            </tr>
+            <tr>
+              <td>15</td>
+              <td>Honduras</td>
+              <td>Sí</td>
+              <td>8.133.160</td>
+              <td>99,0%</td>
+            </tr>
+            <tr>
+              <td>16</td>
+              <td>Francia</td>
+              <td>No</td>
+              <td>6.685.901</td>
+              <td>10,2%</td>
+            </tr>
+            <tr>
+              <td>17</td>
+              <td>El Salvador</td>
+              <td>Sí</td>
+              <td>6.154.453</td>
+              <td>99,7%</td>
+            </tr>
+            <tr>
+              <td>18</td>
+              <td>Nicaragua</td>
+              <td>Sí</td>
+              <td>5.860.740</td>
+              <td>97,0%</td>
+            </tr>
+            <tr>
+              <td>19</td>
+              <td>Italia</td>
+              <td>No</td>
+              <td>5.704.863</td>
+              <td>9,4%</td>
+            </tr>
+            <tr>
+              <td>20</td>
+              <td>Marruecos</td>
+              <td>No</td>
+              <td>5.500.997</td>
+              <td>17,3%</td>
+            </tr>
+            <tr>
+              <td>21</td>
+              <td>Paraguay</td>
+              <td>Sí</td>
+              <td>4.724.610</td>
+              <td>69,5%</td>
+            </tr>
+            <tr>
+              <td>22</td>
+              <td>Costa Rica</td>
+              <td>Sí</td>
+              <td>4.267.298</td>
+              <td>99,2%</td>
+            </tr>
+            <tr>
+              <td>23</td>
+              <td>Filipinas</td>
+              <td>No</td>
+              <td>3.706.773</td>
+              <td>3,6%</td>
+            </tr>
+            <tr>
+              <td>24</td>
+              <td>Puerto Rico</td>
+              <td>Sí</td>
+              <td>3.623.079</td>
+              <td>98,8%</td>
+            </tr>
+            <tr>
+              <td>25</td>
+              <td>Panamá</td>
+              <td>Sí</td>
+              <td>3.424.218</td>
+              <td>93,1%</td>
+            </tr>
+            <tr>
+              <td>26</td>
+              <td>Uruguay</td>
+              <td>Sí</td>
+              <td>3.250.165</td>
+              <td>98,9%</td>
+            </tr>
+            <tr>
+              <td>27</td>
+              <td>Reino Unido</td>
+              <td>No</td>
+              <td>3.110.880</td>
+              <td>4,9%</td>
+            </tr>
+            <tr>
+              <td>28</td>
+              <td>Alemania</td>
+              <td>No</td>
+              <td>2.576.366</td>
+              <td>3,1%</td>
+            </tr>
+            <tr>
+              <td>29</td>
+              <td>Guinea Ecuatorial</td>
+              <td>Sí</td>
+              <td>1.059.129</td>
+              <td>90,5%</td>
+            </tr>
+            <tr>
+              <td>30</td>
+              <td>Canadá</td>
+              <td>No</td>
+              <td>1.001.853</td>
+              <td>2,9%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </article>
 
-    <!-- Card 3: Familias icónicas -->
-    <article class="cultura-card" data-card-id="card-familias-iconicas">
-      <span class="unidad-label">Unidad 3</span>
-      <button class="fullscreen-btn" type="button" data-fullscreen="card-familias-iconicas">Fullscreen</button>
-      <h2>Perspectiva cultural: Familias icónicas</h2>
-      <p>Esta es la familia real (royal family) de España. Felipe VI es rey de España desde (since) 2014. Hay cuatro personas en la familia del rey. Felipe es el padre. Es delgado y muy alto. Su esposa se llama Letizia. Es joven, rubia y atlética. Tienen dos hijas, Leonor y Sofía. La abuela de las niñas también está en la foto, y también se llama Sofía.</p>
+    <!-- Card 3: ¿DÓNDE SE HABLA ESPAÑOL?, p.9 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">¿DÓNDE SE HABLA ESPAÑOL?</div>
+        <div class="page-tag">U0 · Página 9</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <p>Know the locations of the countries on the map. <a
+            href="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/shutterstock_255231058-p9updatedcolors.png">Open
+            big map</a></p>
+
+        <div class="map-wrapper">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/shutterstock_255231058-p9updatedcolors.png"
+            alt="Mapa de los países donde se habla español" />
+        </div>
+      </div>
     </article>
 
-    <!-- Card 4: Los espacios donde vivimos -->
-    <article class="cultura-card" data-card-id="card-espacios">
-      <span class="unidad-label">Unidad 3</span>
-      <button class="fullscreen-btn" type="button" data-fullscreen="card-espacios">Fullscreen</button>
-      <h2>Práctica cultural: Los espacios donde vivimos</h2>
-      <p>The names of the parts of a house vary across the Spanish-speaking world:</p>
+    <!-- Card 4: Los saludos y la distancia personal, p.12 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Práctica cultural: Los saludos y la distancia personal</div>
+        <div class="page-tag">U0 · Página 12</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
 
-      <p class="cultura-section-title">Dónde vivimos</p>
-      <p>piso/apartamento/departamento</p>
+        <p>In many cultures, it is common to exchange handshakes, hugs, a backslap, or kisses when greeting someone and
+          saying goodbye. The exact greeting and gesture depend on the region and the age, sex, or social status of the
+          people involved.</p>
+        <p>Spanish even has different ways of saying “you”, depending on the region and level of formality or social
+          distance. <strong>Tú</strong> or <strong>vos</strong> are used with friends and family, while
+          <strong>usted</strong> is more appropriate for older people or formal settings.
+        </p>
+        <p>You will study these differences in later chapters. For now, it makes sense to observe people carefully to
+          become familiar with the practices relating to greetings and physical space.</p>
 
-      <p class="cultura-section-title">Lugares para dormir</p>
-      <p>el dormitorio/la habitación/el cuarto</p>
-
-      <p class="cultura-section-title">Espacios que compartimos <span class="cultura-subtitle">(we share)</span></p>
-      <p>la sala (de estar)/el salón/el líving (Argentina, Chile)<br>
-        el patio/el jardín/el solar/la yarda (U.S.)</p>
-
-      <p class="cultura-section-title">Los edificios altos</p>
-      <p>la planta baja bottom/ground floor<br>
-        la primera (first) planta second floor</p>
-
-      <p>In some cases the variants are regional synonyms, but in others they reveal interesting details about the local culture. For example, la yarda in U.S. Spanish refers to a typical North American suburban yard. Since most Spaniards live in pisos, with no outdoor green space of their own, el jardín in Spain suggests a public park or common garden area. In Costa Rica or Venezuela, el solar is the green space around a freestanding house.</p>
+        <div class="map-wrapper">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/colourbox1573297.png"
+            alt="Personas saludándose con abrazos y besos" />
+        </div>
+      </div>
     </article>
 
-    <!-- Card 5: Salir del “nido del hogar” -->
-    <article class="cultura-card" data-card-id="card-nido-hogar">
-      <span class="unidad-label">Unidad 3</span>
-      <button class="fullscreen-btn" type="button" data-fullscreen="card-nido-hogar">Fullscreen</button>
-      <h2>Práctica cultural: Salir del “nido del hogar” (Leaving the nest)</h2>
-      <p>En muchos países hispanohablantes, los hijos pueden vivir en casa de sus padres hasta (until) terminar la universidad. No hay mucha presión por salir del hogar e independizarse. En muchas ocasiones los hijos de 30 años todavía viven en casa.</p>
+    <!-- Card 5: El alfabeto español, p.16 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Producto cultural: El alfabeto español</div>
+        <div class="page-tag">U0 · Página 16</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <p>Did you know that Spanish uses a letter that we do not have in English? It is the letter <strong>ñ</strong>.
+          When you recite the Spanish alphabet it comes after the letter <strong>n</strong>.</p>
+        <p>The sound of <strong>ñ</strong> is like the “ny” in English words such as <em>canyon</em>. The mark over the
+          letter <strong>ñ</strong> is called a <strong>tilde</strong>, and the letter has become a symbol of the
+          Spanish language around the world.</p>
+
+        <div class="map-wrapper">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/se_habla_espaniol_by_gerar2.png"
+            alt="Letra ñ decorada con banderas" />
+        </div>
+      </div>
     </article>
 
-    <!-- Card 6: Intercambios familiares -->
-    <article class="cultura-card" data-card-id="card-intercambios">
-      <span class="unidad-label">Unidad 3</span>
-      <button class="fullscreen-btn" type="button" data-fullscreen="card-intercambios">Fullscreen</button>
-      <h2>Perspectiva cultural: Intercambios familiares</h2>
-      <p>Muchas familias españolas valoran las oportunidades de aprender otros idiomas y otras culturas. Algunas familias viajan durante (during) las vacaciones a otros países para una experiencia intercultural. Otras familias les dan a los hijos la experiencia de estudiar o vivir en otro país, o son anfitriones (hosts) de un joven extranjero en su hogar. La familia anfitriona comparte (shares) con el estudiante su cultura y su idioma. El estudiante se convierte (becomes) en un miembro más de la familia, y se forman relaciones para toda la vida (lifetime), una conexión entre dos familias, dos pueblos y dos países.</p>
+    <!-- Card 6: Las estaciones, p.21 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Perspectiva cultural: Las estaciones</div>
+        <div class="page-tag">U0 · Página 21</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <p>In some parts of the Americas, there are four distinct seasons in a calendar year: <strong>el
+            verano</strong>, <strong>el otoño</strong>, <strong>el invierno</strong>, and <strong>la primavera</strong>.
+          Canada is in the Northern Hemisphere, and Argentina is in the Southern Hemisphere, so the seasons in these two
+          locations are opposite.</p>
+        <p>In some climates, especially in Central America, there are only two distinct seasons: the rainy season
+          (<em>de mayo a noviembre</em>) and the dry season (<em>de diciembre a abril</em>). In Costa Rica, for example,
+          these seasons are called <strong>el invierno</strong> and <strong>el verano</strong>, respectively.</p>
+
+        <div class="image-row">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/shutterstock_5018047.png"
+            alt="Nieve en Bariloche, Argentina" />
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/.crops/beach_in_costa_rica_watson__bb638d39fe0b42d3bc089627b4dad96d.png"
+            alt="Playa en Península Nicoya, Costa Rica" />
+        </div>
+        <div class="image-caption">
+          Julio (el invierno) en Bariloche, Argentina &nbsp;&bull;&nbsp;
+          Julio (el invierno) en Península Nicoya, Costa Rica
+        </div>
+      </div>
     </article>
 
+    <!-- Card 7: La fiesta de San Fermín, p.23 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">La fiesta de San Fermín</div>
+        <div class="page-tag">U0 · Página 23</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p>Look at the poster from Spain. It depicts a scene in the streets of a famous city during La Fiesta de San
+            Fermín. Can you explain what happens?</p>
+          <p><strong>Find the following:</strong></p>
+          <ol class="question-list">
+            <li>the dates of La Fiesta de San Fermín</li>
+            <li>the city where the festival takes place</li>
+            <li>the name of the animal depicted in the poster</li>
+            <li>the word in Spanish for: fairs, big, exciting</li>
+          </ol>
+        </div>
+
+        <div class="image-wrapper" style="margin-top:0.7rem;">
+          <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/1960.png"
+            alt="Cartel de la Fiesta de San Fermín de 1960" />
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 8: El toro como icono cultural, p.24 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">El toro como icono cultural</div>
+        <div class="page-tag">U0 · Página 24</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Perspectiva cultural: El toro como icono cultural</strong></p>
+          <p>The <span class="text-italic">encierro</span> (“running of the bulls”) in the feast of San Fermín in
+            Pamplona, Spain, is just one of many events around Spain, Portugal, and southern France that involve a
+            millennia-old fascination with this animal in the Mediterranean area.</p>
+          <p><span class="text-italic">La corrida</span> (bullfight) is another well-known icon of Spanish identity.
+            <span class="text-italic">Corridas</span> are often a part of many town festivals. However, in the 21st
+            century, many Spaniards believe that this tradition perpetuates cruelty against animals, and one region,
+            Cataluña, has abolished bullfights.
+          </p>
+        </div>
+
+        <div class="image-wrapper" style="margin-top:0.7rem;">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/shutterstock_205592167.png"
+            alt="Toros de Guisando" />
+        </div>
+        <p class="caption">The Toros de Guisando bull statues, found near Ávila in central Spain, are almost 5000 years
+          old.</p>
+      </div>
+    </article>
+
+    <!-- Card 9: Los Premios Grammy Latinos, p.26 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Los Premios Grammy Latinos</div>
+        <div class="page-tag">U0 · Página 26</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Los Premios Grammy Latinos</strong></p>
+          <p>Listen to the year that some famous songs won the Grammy Latino for <span class="text-italic">Canción del
+              año</span> (Song of the Year). When you hear the year, consult the table and write the name of the artist
+            who recorded the song that year.</p>
+        </div>
+
+        <div class="image-wrapper" style="margin-top:0.7rem;">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files03/image-from-question-3.png"
+            alt="Carlos Vives y Natalia Lafourcade" />
+        </div>
+
+        <table aria-label="Canción del año - Premios Grammy Latinos" style="margin-top:0.9rem;">
+          <thead>
+            <tr>
+              <th>Año</th>
+              <th>Canción del año</th>
+              <th>Artista</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2000</td>
+              <td>Dímelo</td>
+              <td>Marc Anthony</td>
+            </tr>
+            <tr>
+              <td>2001</td>
+              <td>El alma al aire</td>
+              <td>Alejandro Sanz</td>
+            </tr>
+            <tr>
+              <td>2002</td>
+              <td>Y solo se me ocurre amarte</td>
+              <td>Alejandro Sanz</td>
+            </tr>
+            <tr>
+              <td>2003</td>
+              <td>Es por ti</td>
+              <td>Juanes</td>
+            </tr>
+            <tr>
+              <td>2004</td>
+              <td>No es lo mismo</td>
+              <td>Alejandro Sanz</td>
+            </tr>
+            <tr>
+              <td>2005</td>
+              <td>Tú no tienes alma</td>
+              <td>Alejandro Sanz</td>
+            </tr>
+            <tr>
+              <td>2006</td>
+              <td>La tortura</td>
+              <td>Shakira con Alejandro Sanz</td>
+            </tr>
+            <tr>
+              <td>2007</td>
+              <td>La llave de mi corazón</td>
+              <td>Juan Luis Guerra</td>
+            </tr>
+            <tr>
+              <td>2008</td>
+              <td>Me enamora</td>
+              <td>Juanes</td>
+            </tr>
+            <tr>
+              <td>2009</td>
+              <td>Aquí estoy yo</td>
+              <td>Luis Fonsi</td>
+            </tr>
+            <tr>
+              <td>2010</td>
+              <td>Miente</td>
+              <td>Camila</td>
+            </tr>
+            <tr>
+              <td>2011</td>
+              <td>Latinoamérica</td>
+              <td>Calle 13</td>
+            </tr>
+            <tr>
+              <td>2012</td>
+              <td>Corre</td>
+              <td>Jesse &amp; Joy</td>
+            </tr>
+            <tr>
+              <td>2013</td>
+              <td>Volví a nacer</td>
+              <td>Carlos Vives</td>
+            </tr>
+            <tr>
+              <td>2014</td>
+              <td>Bailando</td>
+              <td>Enrique Iglesias</td>
+            </tr>
+            <tr>
+              <td>2015</td>
+              <td>Hasta la raíz</td>
+              <td>Natalia Lafourcade</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <!-- Card 10: Los años, p.27 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Práctica cultural: Los años</div>
+        <div class="page-tag">U0 · Página 27</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Los años</strong></p>
+          <p>In English, we usually say years in hundreds (e.g., 1935 = nineteen thirty-five, 2015 = twenty fifteen).
+            The years in Spanish are always expressed in thousands (<strong>mil, dos mil</strong>, etc.).</p>
+          <p><strong>2017</strong> dos mil diecisiete<br /><em>two thousand seventeen</em></p>
+          <p><strong>2025</strong> dos mil veinticinco<br /><em>two thousand twenty-five</em></p>
+          <p><strong>1931</strong> mil novecientos treinta y uno<br /><em>one thousand nine hundred thirty-one</em></p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 11: Richard Blanco, p.50 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Richard Blanco, un hombre de múltiples identidades</div>
+        <div class="page-tag">U1 · Página 50</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Perspectiva cultural: Richard Blanco, un hombre de múltiples identidades</strong></p>
+          <p>Richard Blanco is the first Latino poet to read a poem at a U.S. presidential inauguration (Barack Obama,
+            2012). Born in Madrid to Cuban parents, his family moved to the U.S. when he was an infant; and he was
+            raised and educated in Miami, Florida.</p>
+          <p>In 2015 Richard was honored again when he was asked to read his poem “Cosas del mar” / “Matters of the Sea”
+            at the reopening of the American embassy in Havana, Cuba.</p>
+        </div>
+
+        <div class="image-wrapper" style="margin-top:0.7rem;">
+          <img
+            src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files05/richard_blanco.png"
+            alt="El poeta Richard Blanco" />
+        </div>
+        <p class="caption">El poeta hispano Richard Blanco recitó un poema durante la inauguración del Presidente Obama
+          en 2013.</p>
+      </div>
+    </article>
+
+    <!-- Card 12: Los mapas expresan la identidad, p.77 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Los mapas expresan la identidad</div>
+        <div class="page-tag">U1 · Página 77</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Producto cultural: Los mapas expresan la identidad</strong></p>
+          <p>How many continents did you learn that there are in the world? In many English-speaking countries, students
+            learn that there are seven: Africa, Antarctica, Asia, Australia, Europe, North America and South America.
+          </p>
+          <p>But in Latin American schools, students are taught that there are six: África, América, Antártida, Asia,
+            Europa y Oceanía.</p>
+          <p>In fact, in Latin America to be “americano/americana” means something different from being an “American” in
+            the USA. It means that you are from any one of the countries which make up the Americas: North America,
+            Central America and the Caribbean, or South America.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 13: Vocabulario regional, p.93 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Práctica cultural: Vocabulario regional</div>
+        <div class="page-tag">U2 · Página 93</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Vocabulario regional</strong></p>
+          <p>Regional varieties of Spanish have distinct names for common vocabulary, just as with dialects of English
+            (U.S. truck = British lorry). Most of these variants are understood everywhere, and the context usually
+            makes the intended meaning clear. You should learn to recognize a variety of regional words in Spanish, and
+            when you speak or write, use the words associated with the places you are interested in.</p>
+        </div>
+
+        <div class="image-row" style="margin-top:0.7rem;">
+          <div class="image-wrapper">
+            <img
+              src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files08/shutterstock_130282661.png"
+              alt="Persona usando una computadora portátil" />
+          </div>
+          <div class="image-wrapper">
+            <img
+              src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files08/shutterstock_107658848.png"
+              alt="Persona escribiendo con bolígrafo" />
+          </div>
+          <div class="image-wrapper">
+            <img
+              src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files08/shutterstock_290430740.png"
+              alt="Salón de clase con pizarrón" />
+          </div>
+        </div>
+
+        <div class="text-block" style="margin-top:0.6rem;">
+          <p><strong>el ordenador</strong> (España) / <strong>la computadora</strong> (elsewhere)</p>
+          <p><strong>la pluma</strong> (México) / <strong>el lapicero</strong> (Costa Rica) / <strong>la birome</strong>
+            (Argentina) / <strong>el bolígrafo</strong> (elsewhere)</p>
+          <p><strong>el salón de clase</strong> (México) / <strong>el aula</strong> (elsewhere)</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 14: ¿Cómo se dice “you” en Costa Rica?, p.114 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">¿Cómo se dice “you” en Costa Rica?</div>
+        <div class="page-tag">U2 · Página 114</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: ¿Cómo se dice “you” en Costa Rica?</strong></p>
+          <p>You have seen that different regions have their unique vocabulary for everyday objects and other aspects of
+            language can also vary geographically. In Costa Rica, Spanish speakers use a range of forms to address
+            another person directly (“you”), depending on the locale and the age and status of the participants in the
+            conversation.</p>
+          <p>While <strong>tú</strong> is understood in every Spanish-speaking area, you might hear <strong>vos</strong>
+            or <strong>usted</strong> in Costa Rica to address friends and children. Each of these pronouns has its own
+            distinct forms (verb, object of preposition, possessives):</p>
+          <p>Marcos, ¿qué <strong>estudias</strong> este semestre? (tú)<br />
+            Marcos, ¿qué <strong>estudiás</strong> este semestre? (vos)<br />
+            Marcos, ¿qué <strong>estudia</strong> este semestre? (usted)</p>
+          <p>As a learner of Spanish, you should focus on learning <strong>tú</strong> for familiar contexts and
+            <strong>usted</strong> for older people and in professional contexts. You can learn <strong>vos</strong> if
+            you are interested in Central America or other regions where it is common (Argentina, Paraguay, Uruguay).
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 15: Uniformes escolares, no militares, p.127 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Uniformes escolares, no militares</div>
+        <div class="page-tag">U2 · Página 127</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Perspectiva cultural: Uniformes escolares, no militares</strong></p>
+          <p>En el año 1948, el presidente José María (“Don Pepe”) Figueres Ferrer decide que Costa Rica no necesita
+            ejército (army). El país elimina las Fuerzas armadas y usa el presupuesto (budget) militar para la
+            educación, la cultura y la seguridad pública.</p>
+          <p>Hay fuerza pública (o policía) en Costa Rica, pero no hay soldados. Hoy, cuando visitantes (visitors)
+            importantes llegan a Costa Rica, no hay bandas con uniformes militares en el aeropuerto. Hay un grupo de
+            estudiantes en uniformes escolares para darles la bienvenida (to welcome them).</p>
+        </div>
+
+        <div class="image-wrapper" style="margin-top:0.7rem;">
+          <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files08/d7f2bb.png"
+            alt="Estudiantes costarricenses dando la bienvenida al presidente Barack Obama" />
+        </div>
+        <p class="caption">Estudiantes costarricenses le dan la bienvenida (welcome) al presidente estadounidense Barack
+          Obama.</p>
+      </div>
+    </article>
+
+    <!-- Card 16: Pasantías laborales, p.130 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Pasantías laborales</div>
+        <div class="page-tag">U2 · Página 130</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Pasantías laborales</strong></p>
+          <p>Most Costa Rican high school students graduate when they complete the 11th grade. However, those students
+            who choose to attend a <strong>colegio técnico</strong> complete an additional year of studies that prepare
+            them for jobs in business, services, agriculture, and industry.</p>
+          <p>Students in a <strong>colegio técnico</strong> often spend a portion of the school day in a workplace
+            (hospital, business, etc.) doing a <strong>pasantía</strong>, a type of internship. The
+            <strong>pasantía</strong> experience should have the following characteristics:
+          </p>
+          <ol class="question-list">
+            <li>provides a work experience relevant to the student’s specialty area of study</li>
+            <li>minimum age of 16 years old at the start of the internship</li>
+            <li>must take place during school year (between March and October), not during the summer vacation</li>
+          </ol>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 17: Nuevos modelos de familia, p.147 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Nuevos modelos de familia</div>
+        <div class="page-tag">U3 · Página 147</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Nuevos modelos de familia</strong></p>
+          <p>From 1975 to the present, Spain transformed itself from a dictatorship to democracy and a member of the
+            European Union (see timeline in the chapter opener). The traditional Catholic family of the 20th century is
+            less common than before, and Spanish families resemble the structures we find in other European countries
+            and the U.S. Divorce and remarriage are more frequent, and same-sex marriage is legal.</p>
+          <p><strong>Familias monoparentales</strong> (single-parent families) are growing in number, and
+            <strong>parejas de hecho</strong> (unmarried couples) commonly head households and raise children. Spanish
+            has precise or legal vocabulary for the complex relationships in these new family models (left column
+            below), but people tend to use labels that show the emotional relationship (right column):
+          </p>
+        </div>
+
+        <table aria-label="Nuevos modelos de familia">
+          <tbody>
+            <tr>
+              <td>el padrastro <em>(step-father)</em></td>
+              <td>el esposo de mi madre</td>
+            </tr>
+            <tr>
+              <td>la madrastra <em>(step-mother)</em></td>
+              <td>la esposa de mi padre</td>
+            </tr>
+            <tr>
+              <td>la pareja de hecho <em>(partner)</em></td>
+              <td>la pareja de mi padre/madre</td>
+            </tr>
+            <tr>
+              <td>el hermanastro / la hermanastra<br /><em>(step-brother/step-sister; half-brother/half-sister)</em>
+              </td>
+              <td>mis hermanos / los hijos de mi padre/madre</td>
+            </tr>
+            <tr>
+              <td>el/la medio/a hermano/a<br /><em>(half-brother/half-sister)</em></td>
+              <td>mi hermano/a</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <!-- Card 18: Los apellidos, p.149 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Los apellidos</div>
+        <div class="page-tag">U3 · Página 149</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Los apellidos</strong></p>
+          <p>In Spain and in many Latin American countries it is common to give a child two given names
+            (<strong>nombres</strong>). For example, a girl named María Paula García Elizondo would go by “María Paula”,
+            and her nickname might be based on both names, “Maripau”.</p>
+          <p>María Paula’s given names will be accompanied by her two surnames (<strong>apellidos</strong>)—first her
+            father’s family name (García, <strong>el apellido paterno</strong>), then her mother’s (Elizondo, <strong>el
+              apellido materno</strong>).</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 19: Familias icónicas, p.153 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Familias icónicas</div>
+        <div class="page-tag">U3 · Página 153</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Perspectiva cultural: Familias icónicas</strong></p>
+          <p>Esta es la familia real (royal family) de España. Felipe VI es rey de España desde (since) 2014. Hay cuatro
+            personas en la familia del rey. Felipe es el padre. Es delgado y muy alto.</p>
+          <p>Su esposa se llama Letizia. Es joven, rubia y atlética. Tienen dos hijas, Leonor y Sofía. La abuela de las
+            niñas también está en la foto, y también se llama Sofía.</p>
+        </div>
+
+        <div class="image-wrapper" style="margin-top:0.7rem; max-width:260px;">
+          <img src="https://cdn.waysidepublishing.com/flextext/extracted/1738/OPS/img/imported_files11/d5f39p.png"
+            alt="Familia real de España" />
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 20: Los espacios donde vivimos, p.155 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Los espacios donde vivimos</div>
+        <div class="page-tag">U3 · Página 155</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Los espacios donde vivimos</strong></p>
+          <p>The names of the parts of a house vary across the Spanish-speaking world:</p>
+          <p><strong>Dónde vivimos</strong><br />
+            piso/apartamento/departamento</p>
+          <p><strong>Lugares para dormir</strong><br />
+            el dormitorio/la habitación/el cuarto</p>
+          <p><strong>Espacios que compartimos</strong> (we share)<br />
+            la sala (de estar)/el salón/el líving (Argentina, Chile)<br />
+            el patio/el jardín/el solar/la yarda (U.S.)</p>
+          <p><strong>Los edificios altos</strong><br />
+            la planta baja bottom/ground floor<br />
+            la primera (first) planta second floor</p>
+          <p>In some cases the variants are regional synonyms, but in others they reveal interesting details about the
+            local culture. For example, <strong>la yarda</strong> in U.S. Spanish refers to a typical North American
+            suburban yard. Since most Spaniards live in <strong>pisos</strong>, with no outdoor green space of their
+            own, <strong>el jardín</strong> in Spain suggests a public park or common garden area. In Costa Rica or
+            Venezuela, <strong>el solar</strong> is the green space around a freestanding house.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 21: Salir del “nido del hogar”, p.156 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Salir del “nido del hogar”</div>
+        <div class="page-tag">U3 · Página 156</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Práctica cultural: Salir del “nido del hogar” (Leaving the nest)</strong></p>
+          <p>En muchos países hispanohablantes, los hijos pueden vivir en casa de sus padres hasta (until) terminar la
+            universidad. No hay mucha presión por salir del hogar e independizarse. En muchas ocasiones los hijos de 30
+            años todavía viven en casa.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 22: Intercambios familiares, p.188 -->
+    <article class="card">
+      <header class="card-header">
+        <div class="card-title">Intercambios familiares</div>
+        <div class="page-tag">U3 · Página 188</div>
+      </header>
+      <div class="card-body">
+        <div class="fullscreen-chip">
+          <span class="icon">⤢</span><span>Fullscreen</span>
+        </div>
+
+        <div class="text-block">
+          <p><strong>Perspectiva cultural: Intercambios familiares</strong></p>
+          <p>Muchas familias españolas valoran las oportunidades de aprender otros idiomas y otras culturas. Algunas
+            familias viajan durante (during) las vacaciones a otros países para una experiencia intercultural.</p>
+          <p>Otras familias les dan a los hijos la experiencia de estudiar o vivir en otro país, o son anfitriones
+            (hosts) de un joven extranjero en su hogar. La familia anfitriona comparte (shares) con el estudiante su
+            cultura y su idioma. El estudiante se convierte (becomes) en un miembro más de la familia, y se forman
+            relaciones para toda la vida (lifetime), una conexión entre dos familias, dos pueblos y dos países.</p>
+        </div>
+      </div>
+    </article>
   </div>
 
-  <!-- Modal overlay (reused for all cards) -->
-  <div class="modal-overlay" id="card-modal">
-    <div class="modal-card">
-      <span class="modal-unidad-label">Unidad 3</span>
-      <button class="modal-close" type="button" aria-label="Close">&times;</button>
-      <div id="modal-content-inner"></div>
-    </div>
-  </div>
+  <div class="fullscreen-overlay" id="fullscreen-overlay"></div>
 
   <script>
-    (function () {
-      const modal = document.getElementById('card-modal');
-      const modalInner = document.getElementById('modal-content-inner');
-      const closeBtn = modal.querySelector('.modal-close');
+    const overlay = document.getElementById('fullscreen-overlay');
+    let activeCard = null;
 
-      function openModal(cardId) {
-        const card = document.querySelector('[data-card-id="' + cardId + '"]');
-        if (!card) return;
-        // Clone inner content (excluding Unidad / Fullscreen button)
-        const clone = card.cloneNode(true);
-        [...clone.querySelectorAll('.unidad-label, .fullscreen-btn')].forEach(el => el.remove());
-        modalInner.innerHTML = '';
-        while (clone.firstChild) {
-          modalInner.appendChild(clone.firstChild);
+    function openFullscreen(card) {
+      activeCard = card;
+      card.classList.add('is-fullscreen');
+      overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeFullscreen() {
+      if (!activeCard) return;
+      activeCard.classList.remove('is-fullscreen');
+      activeCard = null;
+      overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.card .fullscreen-chip').forEach(chip => {
+      chip.addEventListener('click', e => {
+        e.stopPropagation();
+        const card = chip.closest('.card');
+        if (card.classList.contains('is-fullscreen')) {
+          closeFullscreen();
+        } else {
+          if (activeCard) closeFullscreen();
+          openFullscreen(card);
         }
-        modal.classList.add('active');
+      });
+    });
+
+    overlay.addEventListener('click', closeFullscreen);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeFullscreen();
       }
-
-      function closeModal() {
-        modal.classList.remove('active');
-      }
-
-      document.addEventListener('click', function (e) {
-        const fsBtn = e.target.closest('[data-fullscreen]');
-        if (fsBtn) {
-          const id = fsBtn.getAttribute('data-fullscreen');
-          openModal(id);
-        }
-      });
-
-      closeBtn.addEventListener('click', closeModal);
-
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-          closeModal();
-        }
-      });
-    })();
+    });
   </script>
 </body>
 
