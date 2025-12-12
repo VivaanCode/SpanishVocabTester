@@ -1,4 +1,3 @@
-<!-- TODO: Make the box be auto-selected when a question is answered. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,6 +129,72 @@
       .scorebox { font-size: 0.99em; }
       .userans, .corrans { padding-left: 7px; }
     }
+
+    /* Modal overlay (responsive) */
+    #vocab-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #vocab-modal.hidden {
+      display: none;
+    }
+
+    .vocab-modal-content {
+      background: #ffffff;
+      max-width: 480px;
+      width: 90vw;
+      padding: 1.3em 1.1em 1.1em 1.1em;
+      border-radius: 10px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+      box-sizing: border-box;
+    }
+
+    .vocab-modal-content h3 {
+      margin: 0 0 0.6em 0;
+      font-size: 1.1em;
+    }
+
+    .vocab-modal-content p {
+      margin: 0;
+      font-size: 0.98em;
+      line-height: 1.4;
+    }
+
+    .vocab-modal-content a {
+      color: #1976d2;
+      text-decoration: underline;
+      word-break: break-word;
+    }
+
+    .vocab-modal-close {
+      border: none;
+      background: transparent;
+      font-size: 1.4em;
+      line-height: 1;
+      cursor: pointer;
+      float: right;
+      margin-left: 0.5em;
+      padding: 0;
+    }
+
+    @media (max-width: 480px) {
+      .vocab-modal-content {
+        width: 94vw;
+        padding: 1.1em 0.9em 0.9em 0.9em;
+      }
+      .vocab-modal-content h3 {
+        font-size: 1em;
+      }
+      .vocab-modal-content p {
+        font-size: 0.94em;
+      }
+    }
   </style>
 </head>
 
@@ -151,164 +216,323 @@
     </div>
   </div>
 
+  <!-- Modal (opens on page load) -->
+  <div id="vocab-modal" aria-modal="true" role="dialog">
+    <div class="vocab-modal-content">
+      <button class="vocab-modal-close" aria-label="Close notice">&times;</button>
+      <h3>Vocabulary Update</h3>
+      <p>
+        Vocabulary updated for all final vocabulary. Full vocabulary list is
+        <a href="https://docs.google.com/document/d/1QtoztlA2zzjpPAVj9qm7TAPvgp191pPXhWpu4yGYkOA/edit?usp=sharing"
+           target="_blank" rel="noopener noreferrer">here</a>.
+      </p>
+    </div>
+  </div>
+
   <script>
     // Vocabulary list
-    const vocab = [
-      {eng: "have lunch", esp: "almorzar (o → ue)"},
-      {eng: "help", esp: "ayudar"},
-      {eng: "walk", esp: "caminar"},
-      {eng: "sing", esp: "cantar"},
-      {eng: "teach", esp: "enseñar"},
-      {eng: "study", esp: "estudiar"},
-      {eng: "wear; to bring", esp: "llevar"},
-      {eng: "participate", esp: "participar"},
-      {eng: "pay attention", esp: "prestar atención"},
-      {eng: "go back home", esp: "regresar a casa"},
-      {eng: "take", esp: "tomar"},
-      {eng: "work in teams", esp: "trabajar en equipo"},
-      {eng: "use", esp: "usar"},
-      {eng: "in the morning", esp: "por la mañana"},
-      {eng: "at noontime", esp: "al mediodía"},
-      {eng: "in the afternoon", esp: "por la tarde"},
-      {eng: "in the evening", esp: "por la noche"},
-      {eng: "on Saturdays", esp: "los sábados"},
-      {eng: "on Sundays", esp: "los domingos"},
-      {eng: "lunch", esp: "el almuerzo"},
-      {eng: "science", esp: "la ciencia"},
-      {eng: "social studies", esp: "los estudios sociales"},
-      {eng: "geography", esp: "la geografía"},
-      {eng: "history", esp: "la historia"},
-      {eng: "computer science", esp: "la informática"},
-      {eng: "math", esp: "las matemáticas"},
-      {eng: "chemistry", esp: "la química"},
-      {eng: "break (between classes)", esp: "el recreo/el receso"},
-      {eng: "bus", esp: "el autobús"},
-      {eng: "ceremony", esp: "la ceremonia"},
-      {eng: "classmate", esp: "el compañero de clase/la compañera de clase"},
-      {eng: "principal", esp: "el director/la directora"},
-      {eng: "national anthem", esp: "el himno nacional"},
-      {eng: "exchange", esp: "el intercambio"},
-      {eng: "teacher (particularly in elementary school)", esp: "el maestro/la maestra"},
-      {eng: "teacher", esp: "el profesor/la profesora"},
-      {eng: "secretary", esp: "el secretario/la secretaria"},
-      {eng: "(At) what time?", esp: "¿A qué hora?"},
-      {eng: "The class begins at...", esp: "La clase empieza a..."},
-      {eng: "The class ends at...", esp: "La clase termina a..."},
-      {eng: "schedule", esp: "el horario"},
-      {eng: "between classes", esp: "entre clases"},
-      {eng: "I have", esp: "Tengo..."},
-      {eng: "I need", esp: "Necesito..."},
-      {eng: "What do you need?", esp: "¿Qué necesitas?"},
-      {eng: "How much does it cost?", esp: "¿Cuánto cuesta?"},
-      {eng: "How much do they cost?", esp: "¿Cuánto cuestan?"},
-      {eng: "assignment notebook", esp: "la agenda escolar"},
-      {eng: "pen", esp: "el bolígrafo"},
-      {eng: "calculator", esp: "la calculadora"},
-      {eng: "folder", esp: "la carpeta"},
-      {eng: "computer", esp: "la computadora"},
-      {eng: "notebook", esp: "el cuaderno"},
-      {eng: "dictionary", esp: "el diccionario"},
-      {eng: "school", esp: "la escuela"},
-      {eng: "sheet of paper", esp: "la hoja de papel"},
-      {eng: "pencil/pencils", esp: "el lápiz/los lápices"},
-      {eng: "textbook", esp: "el libro de texto"},
-      {eng: "backpack", esp: "la mochila"},
-      {eng: "paper", esp: "el papel"},
-      {eng: "package", esp: "el paquete"},
-      {eng: "tablet computer", esp: "la tablet"},
-      {eng: "scissors", esp: "las tijeras"},
-      {eng: "shirt", esp: "la camisa"},
-      {eng: "logo; crest; emblem", esp: "el escudo"},
-      {eng: "skirt", esp: "la falda"},
-      {eng: "pants", esp: "los pantalones"},
-      {eng: "shoes", esp: "los zapatos"},
-      {eng: "white", esp: "blanco/a"},
-      {eng: "black", esp: "negro/a"},
-      {eng: "green", esp: "verde"},
-      {eng: "30", esp: "treinta"},
-      {eng: "40", esp: "cuarenta"},
-      {eng: "50", esp: "cincuenta"},
-      {eng: "60", esp: "sesenta"},
-      {eng: "70", esp: "setenta"},
-      {eng: "80", esp: "ochenta"},
-      {eng: "90", esp: "noventa"},
-      {eng: "100", esp: "cien/ciento"},
-      {eng: "200", esp: "doscientos"},
-      {eng: "1,000", esp: "mil"},
-      {eng: "there is/there are", esp: "hay"},
-      {eng: "a/an/one", esp: "un/una"},
-      {eng: "some", esp: "unos/unas"},
-      {eng: "many", esp: "muchos/muchas"},
-      {eng: "auditorium", esp: "el auditorio"},
-      {eng: "classroom", esp: "el aula; el salón de clase"},
-      {eng: "library", esp: "la biblioteca"},
-      {eng: "cafeteria", esp: "el comedor/la soda (C.R.)"},
-      {eng: "soccer field", esp: "el campo de fútbol"},
-      {eng: "high school", esp: "el colegio (C.R.)"},
-      {eng: "building", esp: "el edificio"},
-      {eng: "gymnasium", esp: "el gimnasio"},
-      {eng: "laboratory", esp: "el laboratorio"},
-      {eng: "office", esp: "la oficina"},
-      {eng: "hallway", esp: "el pasillo"},
-      {eng: "swimming pool", esp: "la piscina"},
-      {eng: "high school", esp: "el colegio"},
-      {eng: "tablet computer", esp: "la táblet"},
-      // NEW VOCABULARY STARTS HERE (Unidad 3)
-      {eng: "This is my family", esp: "Esta es mi familia"},
-      {eng: "Who are they?", esp: "¿Quiénes son?"},
-      {eng: "grandfather/grandmother", esp: "el/la abuelo/a"},
-      {eng: "surname", esp: "el apellido"},
-      {eng: "baby", esp: "el/la bebé"},
-      {eng: "great-grandfather/mother", esp: "el/la bisabuelo/a"},
-      {eng: "husband/wife", esp: "el/la esposo/a"},
-      {eng: "cat", esp: "el gato"},
-      {eng: "son/daughter", esp: "el/la hijo/a"},
-      {eng: "brother/sister", esp: "el/la hermano/a"},
-      {eng: "mother", esp: "la madre"},
-      {eng: "pet", esp: "la mascota"},
-      {eng: "grandson/granddaughter", esp: "el/la nieto/a"},
-      {eng: "(given) name", esp: "el nombre"},
-      {eng: "father", esp: "el padre"},
-      {eng: "the parents", esp: "los padres"},
-      {eng: "dog", esp: "el perro"},
-      {eng: "cousin", esp: "el/la primo/a"},
-      {eng: "nephew/niece", esp: "el/la sobrino/a"},
-      {eng: "uncle/aunt", esp: "el/la tío/a"},
-      {eng: "What are they like?", esp: "¿Cómo son?"},
-      {eng: "tall", esp: "alto/a"},
-      {eng: "nice; kind", esp: "amable"},
-      {eng: "thin", esp: "delgado/a"},
-      {eng: "fat", esp: "gordo/a"},
-      {eng: "big", esp: "grande"},
-      {eng: "young", esp: "joven"},
-      {eng: "small", esp: "pequeño/a"},
-      {eng: "old", esp: "viejo/a"},
-      {eng: "happy", esp: "alegre"},
-      {eng: "quiet", esp: "callado/a"},
-      {eng: "fun", esp: "divertido/a"},
-      {eng: "polite", esp: "educado/a"},
-      {eng: "funny; comical", esp: "gracioso/a"},
-      {eng: "honest", esp: "honesto/a"},
-      {eng: "impatient", esp: "impaciente"},
-      {eng: "older (than)", esp: "mayor (que)"},
-      {eng: "younger (than)", esp: "menor (que)"},
-      {eng: "organized", esp: "ordenado/a"},
-      {eng: "serious", esp: "serio/a"},
-      {eng: "friendly", esp: "simpático/a"},
-      {eng: "unmarried; single", esp: "soltero/a"},
-      {eng: "talented", esp: "talentoso/a"},
-      {eng: "He is handsome/ She is pretty", esp: "Es guapo/a"},
-      {eng: "He/She is dark complected", esp: "Es moreno/a"},
-      {eng: "He/she has blond hair", esp: "Tiene el pelo rubio"},
-      {eng: "He/she has dark hair", esp: "Tiene el pelo oscuro"},
-      {eng: "He/she is blond(e)", esp: "Es rubio/a"},
-      {eng: "He/she is a red-head", esp: "Es pelirrojo/a"},
-      {eng: "He/she has . . eyes", esp: "Tiene los ojos . ."},
-      {eng: "blue", esp: "azul"},
-      {eng: "brown", esp: "castaño/a"},
-      {eng: "brown", esp: "de color café"},
-      {eng: "black", esp: "negro/a"},
-      {eng: "green", esp: "verde"}
+    const vocab = [{eng: "Hello! / Hi!", esp: "¡Hola!"},
+{eng: "Good morning, professor", esp: "Buenos días, profesor/profesora"},
+{eng: "Good afternoon", esp: "Buenas tardes"},
+{eng: "How are you? (informal)", esp: "¿Cómo estás?"},
+{eng: "How are you? (formal)", esp: "¿Cómo está usted?"},
+{eng: "I’m fine. And you?", esp: "Estoy bien. ¿Y tú?"},
+{eng: "Great, thanks!", esp: "¡Muy bien, gracias!"},
+{eng: "so-so, OK", esp: "más o menos"},
+{eng: "OK, all right", esp: "regular"},
+{eng: "bad, not well", esp: "mal"},
+{eng: "Goodbye!", esp: "¡Adiós!"},
+{eng: "Ciao!", esp: "¡Chao!"},
+{eng: "See you!", esp: "¡Nos vemos!"},
+{eng: "See you later!", esp: "¡Hasta luego!"},
+{eng: "January", esp: "enero"},
+{eng: "February", esp: "febrero"},
+{eng: "March", esp: "marzo"},
+{eng: "April", esp: "abril"},
+{eng: "May", esp: "mayo"},
+{eng: "June", esp: "junio"},
+{eng: "July", esp: "julio"},
+{eng: "August", esp: "agosto"},
+{eng: "September", esp: "septiembre"},
+{eng: "October", esp: "octubre"},
+{eng: "November", esp: "noviembre"},
+{eng: "December", esp: "diciembre"},
+{eng: "Monday", esp: "lunes"},
+{eng: "Tuesday", esp: "martes"},
+{eng: "Wednesday", esp: "miércoles"},
+{eng: "Thursday", esp: "jueves"},
+{eng: "Friday", esp: "viernes"},
+{eng: "Saturday", esp: "sábado"},
+{eng: "Sunday", esp: "domingo"},
+{eng: "summer", esp: "el verano"},
+{eng: "autumn, fall", esp: "el otoño"},
+{eng: "winter", esp: "el invierno"},
+{eng: "spring", esp: "la primavera"},
+{eng: "actor", esp: "el actor/la actriz"},
+{eng: "artist", esp: "el/la artista"},
+{eng: "athlete", esp: "el/la atleta"},
+{eng: "dancer", esp: "el bailarín/la bailarina"},
+{eng: "bilingual", esp: "bilingüe"},
+{eng: "blogger", esp: "el/la bloguero/a"},
+{eng: "cyclist", esp: "el/la ciclista"},
+{eng: "classmate", esp: "el/la compañero/a de clase"},
+{eng: "trainer, coach", esp: "el/la entrenador/a"},
+{eng: "student", esp: "el/la estudiante"},
+{eng: "photographer", esp: "el/la fotógrafo/a"},
+{eng: "football (soccer) player", esp: "el/la futbolista"},
+{eng: "gymnast", esp: "el/la gimnasta"},
+{eng: "guitarist", esp: "el/la guitarrista"},
+{eng: "poet", esp: "el poeta/la poeta"},
+{eng: "vegetarian", esp: "el/la vegetariano/a"},
+{eng: "volunteer", esp: "el/la voluntario/a"},
+{eng: "to dance", esp: "bailar"},
+{eng: "to eat", esp: "comer"},
+{eng: "to write poems", esp: "escribir poemas"},
+{eng: "to study", esp: "estudiar"},
+{eng: "to listen to music", esp: "escuchar música"},
+{eng: "to speak, talk", esp: "hablar"},
+{eng: "to play (basketball)", esp: "jugar (al baloncesto)"},
+{eng: "to watch movies", esp: "mirar películas"},
+{eng: "to surf the web", esp: "navegar en/por internet"},
+{eng: "to paint", esp: "pintar"},
+{eng: "to practice sports", esp: "practicar deportes"},
+{eng: "to play an instrument", esp: "tocar un instrumento"},
+{eng: "to work", esp: "trabajar"},
+{eng: "to live", esp: "vivir"},
+{eng: "How? / What?", esp: "¿Cómo?"},
+{eng: "Which one? / What?", esp: "¿Cuál?"},
+{eng: "When?", esp: "¿Cuándo?"},
+{eng: "How much?", esp: "¿Cuánto/a?"},
+{eng: "How many?", esp: "¿Cuántos/as?"},
+{eng: "Where (from)?", esp: "¿(De) dónde?"},
+{eng: "Why?", esp: "¿Por qué?"},
+{eng: "What?", esp: "¿Qué?"},
+{eng: "What do you like to do?", esp: "¿Qué te gusta hacer?"},
+{eng: "What’s your name?", esp: "¿Cómo te llamas?"},
+{eng: "Why are you studying Spanish?", esp: "¿Por qué estudias español?"},
+{eng: "Where are you from?", esp: "¿De dónde eres?"},
+{eng: "What is your favorite sport?", esp: "¿Cuál es tu deporte favorito?"},
+{eng: "How old are you?", esp: "¿Cuántos años tienes?"},
+{eng: "When is your birthday?", esp: "¿Cuándo es tu cumpleaños?"},
+{eng: "German", esp: "alemán"},
+{eng: "Chinese", esp: "chino"},
+{eng: "Spanish", esp: "español"},
+{eng: "French", esp: "francés"},
+{eng: "Guarani", esp: "guaraní"},
+{eng: "English", esp: "inglés"},
+{eng: "Italian", esp: "italiano"},
+{eng: "Portuguese", esp: "portugués"},
+{eng: "Russian", esp: "ruso"},
+{eng: "Vietnamese", esp: "vietnamita"},
+{eng: "also", esp: "también"},
+{eng: "Me too!", esp: "¡Yo también!"},
+{eng: "Interesting!", esp: "¡Qué interesante!"},
+{eng: "Great!", esp: "¡Qué bueno!"},
+{eng: "Too bad!", esp: "¡Qué pena!"},
+{eng: "I have", esp: "Tengo . . ."},
+{eng: "I need", esp: "Necesito . . ."},
+{eng: "What do you need?", esp: "¿Qué necesitas?"},
+{eng: "How much does it cost?", esp: "¿Cuánto cuesta?"},
+{eng: "How much do they cost?", esp: "¿Cuánto cuestan?"},
+{eng: "assignment notebook", esp: "la agenda escolar"},
+{eng: "pen", esp: "el bolígrafo"},
+{eng: "calculator", esp: "la calculadora"},
+{eng: "folder", esp: "la carpeta"},
+{eng: "computer", esp: "la computadora"},
+{eng: "notebook", esp: "el cuaderno"},
+{eng: "dictionary", esp: "el diccionario"},
+{eng: "school", esp: "la escuela"},
+{eng: "sheet of paper", esp: "la hoja de papel"},
+{eng: "pencil; pencils", esp: "el lápiz/los lápices"},
+{eng: "textbook", esp: "el libro de texto"},
+{eng: "backpack", esp: "la mochila"},
+{eng: "paper", esp: "el papel"},
+{eng: "package", esp: "el paquete"},
+{eng: "tablet computer", esp: "la táblet"},
+{eng: "scissors", esp: "las tijeras"},
+{eng: "shirt", esp: "la camisa"},
+{eng: "logo; crest; emblem", esp: "el escudo"},
+{eng: "skirt", esp: "la falda"},
+{eng: "pants", esp: "los pantalones"},
+{eng: "shoes", esp: "los zapatos"},
+{eng: "white", esp: "blanco/a"},
+{eng: "black", esp: "negro/a"},
+{eng: "green", esp: "verde"},
+{eng: "30", esp: "treinta"},
+{eng: "40", esp: "cuarenta"},
+{eng: "50", esp: "cincuenta"},
+{eng: "60", esp: "sesenta"},
+{eng: "70", esp: "setenta"},
+{eng: "80", esp: "ochenta"},
+{eng: "90", esp: "noventa"},
+{eng: "100", esp: "cien/ciento"},
+{eng: "200", esp: "doscientos"},
+{eng: "1.000", esp: "mil"},
+{eng: "lunch", esp: "el almuerzo"},
+{eng: "science", esp: "la ciencia"},
+{eng: "social studies", esp: "los estudios sociales"},
+{eng: "geography", esp: "la geografía"},
+{eng: "history", esp: "la historia"},
+{eng: "computer science", esp: "la informática"},
+{eng: "math", esp: "las matemáticas"},
+{eng: "chemistry", esp: "la química"},
+{eng: "break (between classes)", esp: "el recreo/el receso"},
+{eng: "there is/there are", esp: "hay"},
+{eng: "a/an/one", esp: "un/una"},
+{eng: "some", esp: "unos/unas"},
+{eng: "many", esp: "muchos/muchas"},
+{eng: "auditorium", esp: "el auditorio"},
+{eng: "classroom", esp: "el aula; el salón de clase"},
+{eng: "library", esp: "la biblioteca"},
+{eng: "cafeteria", esp: "el comedor/la soda (C.R.)"},
+{eng: "soccer field", esp: "el campo de fútbol"},
+{eng: "high school", esp: "el colegio (C.R.)"},
+{eng: "building", esp: "el edificio"},
+{eng: "gymnasium", esp: "el gimnasio"},
+{eng: "laboratory", esp: "el laboratorio"},
+{eng: "office", esp: "la oficina"},
+{eng: "hallway", esp: "el pasillo"},
+{eng: "swimming pool", esp: "la piscina"},
+{eng: "(At) what time?", esp: "¿A qué hora?"},
+{eng: "The class begins at . . .", esp: "La clase empieza a . . ."},
+{eng: "The class ends at . . .", esp: "La clase termina a . . ."},
+{eng: "schedule", esp: "el horario"},
+{eng: "between classes", esp: "entre clases"},
+{eng: "in the morning", esp: "por la mañana"},
+{eng: "at noontime", esp: "al mediodía"},
+{eng: "in the afternoon", esp: "por la tarde"},
+{eng: "in the evening", esp: "por la noche"},
+{eng: "on Saturdays", esp: "los sábados"},
+{eng: "on Sundays", esp: "los domingos"},
+{eng: "have lunch", esp: "almorzar (o → ue)"},
+{eng: "help", esp: "ayudar"},
+{eng: "walk", esp: "caminar"},
+{eng: "sing", esp: "cantar"},
+{eng: "teach", esp: "enseñar"},
+{eng: "study", esp: "estudiar"},
+{eng: "wear; to bring", esp: "llevar"},
+{eng: "participate", esp: "participar"},
+{eng: "pay attention", esp: "prestar atención"},
+{eng: "go back home", esp: "regresar a casa"},
+{eng: "take", esp: "tomar"},
+{eng: "work in teams", esp: "trabajar en equipo"},
+{eng: "use", esp: "usar"},
+{eng: "bus", esp: "el autobús"},
+{eng: "ceremony", esp: "la ceremonia"},
+{eng: "classmate", esp: "el compañero de clase/la compañera de clase"},
+{eng: "principal", esp: "el director/la directora"},
+{eng: "national anthem", esp: "el himno nacional"},
+{eng: "exchange", esp: "el intercambio"},
+{eng: "teacher (particularly in elementary school)", esp: "el maestro/la maestra"},
+{eng: "teacher", esp: "el profesor/la profesora"},
+{eng: "secretary", esp: "el secretario/la secretaria"},
+{eng: "This is my family", esp: "Esta es mi familia"},
+{eng: "Who are they?", esp: "¿Quiénes son?"},
+{eng: "grandfather/grandmother", esp: "el/la abuelo/a"},
+{eng: "surname", esp: "el apellido"},
+{eng: "baby", esp: "el/la bebé"},
+{eng: "great-grandfather/mother", esp: "el/la bisabuelo/a"},
+{eng: "husband/wife", esp: "el/la esposo/a"},
+{eng: "cat", esp: "el gato"},
+{eng: "son/daughter", esp: "el/la hijo/a"},
+{eng: "brother/sister", esp: "el/la hermano/a"},
+{eng: "mother", esp: "la madre"},
+{eng: "pet", esp: "la mascota"},
+{eng: "grandson/granddaughter", esp: "el/la nieto/a"},
+{eng: "(given) name", esp: "el nombre"},
+{eng: "father", esp: "el padre"},
+{eng: "the parents", esp: "los padres"},
+{eng: "dog", esp: "el perro"},
+{eng: "cousin", esp: "el/la primo/a"},
+{eng: "nephew/niece", esp: "el/la sobrino/a"},
+{eng: "uncle/aunt", esp: "el/la tío/a"},
+{eng: "What are they like?", esp: "¿Cómo son?"},
+{eng: "tall", esp: "alto/a"},
+{eng: "nice; kind", esp: "amable"},
+{eng: "thin", esp: "delgado/a"},
+{eng: "fat", esp: "gordo/a"},
+{eng: "big", esp: "grande"},
+{eng: "young", esp: "joven"},
+{eng: "small", esp: "pequeño/a"},
+{eng: "old", esp: "viejo/a"},
+{eng: "happy", esp: "alegre"},
+{eng: "quiet", esp: "callado/a"},
+{eng: "fun", esp: "divertido/a"},
+{eng: "polite", esp: "educado/a"},
+{eng: "funny; comical", esp: "gracioso/a"},
+{eng: "honest", esp: "honesto/a"},
+{eng: "impatient", esp: "impaciente"},
+{eng: "older (than)", esp: "mayor (que)"},
+{eng: "younger (than)\n", esp: "menor (que)"},
+{eng: "organized", esp: "ordenado/a"},
+{eng: "serious", esp: "serio/a"},
+{eng: "friendly", esp: "simpático/a"},
+{eng: "unmarried; single", esp: "soltero/a"},
+{eng: "talented", esp: "talentoso/a"},
+{eng: "He is handsome/She is pretty", esp: "Es guapo/a"},
+{eng: "He/She is dark complected", esp: "Es moreno/a"},
+{eng: "He/she has blond hair", esp: "Tiene el pelo rubio"},
+{eng: "He/she has dark hair", esp: "Tiene el pelo oscuro"},
+{eng: "He/she is blond(e)", esp: "Es rubio/a"},
+{eng: "He/she is a red-head", esp: "Es pelirrojo/a"},
+{eng: "He/she has . . . eyes", esp: "Tiene los ojos . . ."},
+{eng: "blue", esp: "azul"},
+{eng: "brown", esp: "castaño/a"},
+{eng: "brown", esp: "de color café"},
+{eng: "black", esp: "negro/a"},
+{eng: "green", esp: "verde"},
+{eng: "apartment", esp: "el apartamento"},
+{eng: "bathroom", esp: "el baño"},
+{eng: "the house", esp: "la casa"},
+{eng: "kitchen", esp: "la cocina"},
+{eng: "dining room", esp: "el comedor"},
+{eng: "bedroom", esp: "el dormitorio"},
+{eng: "garage", esp: "el garaje"},
+{eng: "garden; yard", esp: "el jardín"},
+{eng: "patio", esp: "el patio"},
+{eng: "floor; flat; apartment (Spain)", esp: "el piso"},
+{eng: "living room", esp: "la sala"},
+{eng: "terrace", esp: "la terraza"},
+{eng: "to the right (of)", esp: "a la derecha (de)"},
+{eng: "to the left (of)", esp: "a la izquierda (de)"},
+{eng: "in the back (of)", esp: "al fondo (de)"},
+{eng: "beside", esp: "al lado (de)"},
+{eng: "behind", esp: "detrás (de)"},
+{eng: "in the middle (of)", esp: "en medio (de)"},
+{eng: "on a main street", esp: "en una avenida"},
+{eng: "in the neighborhood", esp: "en el barrio"},
+{eng: "in the country", esp: "en el campo"},
+{eng: "in the city", esp: "en la ciudad"},
+{eng: "on a quiet street", esp: "en una calle tranquila"},
+{eng: "in the town", esp: "en el pueblo"},
+{eng: "I have to", esp: "Tengo que"},
+{eng: "I’m sorry.", esp: "Lo siento."},
+{eng: "I can’t.", esp: "No puedo."},
+{eng: "to ride a bicycle", esp: "andar en bicicleta"},
+{eng: "to help", esp: "ayudar"},
+{eng: "to eat dinner; supper", esp: "cenar"},
+{eng: "to eat together", esp: "comer juntos"},
+{eng: "to go for a walk/ride", esp: "dar un paseo"},
+{eng: "to explore the city/the country", esp: "explorar la ciudad/el campo"},
+{eng: "to get exercise", esp: "hacer ejercicio"},
+{eng: "to play sports", esp: "jugar deportes"},
+{eng: "to go to the movies", esp: "ir al cine"},
+{eng: "to go out with friends", esp: "salir con amigos"},
+{eng: "to watch television/a movie", esp: "ver la televisión/una película"},
+{eng: "always", esp: "siempre"},
+{eng: "every day", esp: "todos los días"},
+{eng: "frequently; often", esp: "frecuentemente"},
+{eng: "sometimes", esp: "a veces"},
+{eng: "once (a week)", esp: "una vez (por semana)"},
+{eng: "twice", esp: "dos veces"},
+{eng: "never", esp: "nunca"},
+{eng: "I prefer . . .", esp: "Yo prefiero…"},
+{eng: "My own room", esp: "Mi propia habitación"},
+{eng: "For me . . . is important.", esp: "Para mí es importante…"},
+{eng: "What if we have . . . ?", esp: "¿Qué tal si tenemos… ?"},
+{eng: "Don’t be silly!", esp: "¡No seas tonto/a!"},
+{eng: "Agreed.", esp: "De acuerdo."},
+{eng: "Susana is right.", esp: "Susana tiene razón."}
     ];
 
     let idx = 0, order = [], current = {};
@@ -325,11 +549,16 @@
       allowInput = true;
       idx++;
       current = vocab[order[(idx - 1) % vocab.length]];
+      const answerEl = document.getElementById('answer');
+
       document.getElementById('question').textContent = "Spanish for: " + current.eng;
-      document.getElementById('answer').value = '';
-      document.getElementById('answer').focus();
+      answerEl.value = '';
       document.getElementById('feedback').textContent = '';
-      document.getElementById('answer').disabled = false;
+      answerEl.disabled = false;
+
+      // Auto-focus + auto-select for fast mobile/desktop re-typing
+      answerEl.focus(); // focus behavior is standard DOM API [web:12]
+      answerEl.select(); // selects text in an input [web:21]
     }
 
     function updateStatsAndHistory() {
@@ -349,7 +578,9 @@
 
     function checkAnswer() {
       if (!allowInput) return;
-      const userAns = document.getElementById('answer').value.trim();
+      const answerEl = document.getElementById('answer');
+      const userAns = answerEl.value.trim();
+
       if (userAns === current.esp) {
         document.getElementById('feedback').textContent = "Correct!";
         document.getElementById('feedback').style.color = "#118b0a";
@@ -361,9 +592,10 @@
         wrong++;
         history.push({eng: current.eng, your: userAns, exp: current.esp, correct: false});
       }
+
       updateStatsAndHistory();
       allowInput = false;
-      document.getElementById('answer').disabled = true;
+      answerEl.disabled = true;
       setTimeout(showQuestion, 1500);
     }
 
@@ -371,10 +603,37 @@
       if (e.key === "Enter") checkAnswer();
     });
 
+    // Modal logic
+    const vocabModal = document.getElementById('vocab-modal');
+    const vocabModalClose = document.querySelector('.vocab-modal-close');
+
+    function closeVocabModal() {
+      vocabModal.classList.add('hidden');
+      // After closing, return focus to the input for better UX
+      const answerEl = document.getElementById('answer');
+      answerEl.focus(); // standard DOM focus [web:12]
+      answerEl.select(); // select input text [web:21]
+    }
+
+    vocabModalClose.addEventListener('click', closeVocabModal);
+
+    // Click outside the modal content closes it
+    vocabModal.addEventListener('click', function (e) {
+      if (e.target === vocabModal) closeVocabModal();
+    });
+
+    // ESC closes modal
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !vocabModal.classList.contains('hidden')) {
+        closeVocabModal();
+      }
+    });
+
     // Initialize
     initOrder();
     showQuestion();
     updateStatsAndHistory();
+    // Modal is visible by default on page load
   </script>
 </body>
 </html>
