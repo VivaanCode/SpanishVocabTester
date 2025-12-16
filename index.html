@@ -65,6 +65,16 @@
       background: #256029;
     }
 
+    #check-btn {
+      display: block;
+    }
+
+    @media (min-width: 601px) {
+      #check-btn {
+        display: none;
+      }
+    }
+
     #feedback {
       font-weight: bold;
       min-height: 24px;
@@ -200,10 +210,11 @@
 
 <body>
   <div id="quiz-box">
-    <h2>Spanish Vocab Quiz (pp.120-121)</h2>
+    <h2>Spanish Vocab Quiz (Complete)</h2>
     <div id="question"></div>
     <input type="text" id="answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       placeholder="Type answer using accents if needed" />
+    <button id="check-btn" onclick="checkAnswer()">✓ Check</button>
     <button onclick="checkAnswer()" style="display:none;">Check Answer</button>
     <div id="feedback"></div>
     <div class="stats-history-section">
@@ -230,7 +241,7 @@
   </div>
 
   <script>
-    // Vocabulary list
+    // Complete vocabulary list (no duplicates, fixed C.R. entries)
     const vocab = [{eng: "Hello! / Hi!", esp: "¡Hola!"},
 {eng: "Good morning, professor", esp: "Buenos días, profesor/profesora"},
 {eng: "Good afternoon", esp: "Buenas tardes"},
@@ -534,11 +545,36 @@
 {eng: "Agreed.", esp: "De acuerdo."},
 {eng: "Susana is right.", esp: "Susana tiene razón."}
     ];
-
     let idx = 0, order = [], current = {};
     let right = 0, wrong = 0;
     const history = [];
     let allowInput = true;
+
+    function normalizeAnswer(userInput, expected) {
+      // Ultra-flexible normalization that accepts ANY variation
+      const normalizeText = (text) => {
+        return text
+          .trim()
+          .toLowerCase()
+          // Normalize ALL dot variations to single dots with spaces
+          .replace(/\.+/g, '.')           // multiple dots → single dot
+          .replace(/\s*\.\s*/g, '. ')     // dot + any spaces → ". "
+          .replace(/^\.+|\.+$/g, '')      // remove leading/trailing dots
+          // Normalize ALL separator variations: / , | - → /
+          .replace(/[|,|-]/g, '/')        // , | - → /
+          .replace(/\s*\/\s*/g, '/')      // / with any spaces → /
+          // Normalize multiple slashes
+          .replace(/\/+/g, '/')
+          // Normalize multiple spaces
+          .replace(/\s+/g, ' ')
+          .trim();
+      };
+
+      return {
+        user: normalizeText(userInput),
+        expected: normalizeText(expected)
+      };
+    }
 
     function initOrder() {
       order = [...Array(vocab.length).keys()].sort(() => Math.random() - 0.5);
@@ -556,9 +592,8 @@
       document.getElementById('feedback').textContent = '';
       answerEl.disabled = false;
 
-      // Auto-focus + auto-select for fast mobile/desktop re-typing
-      answerEl.focus(); // focus behavior is standard DOM API [web:12]
-      answerEl.select(); // selects text in an input [web:21]
+      answerEl.focus();
+      answerEl.select();
     }
 
     function updateStatsAndHistory() {
@@ -579,9 +614,11 @@
     function checkAnswer() {
       if (!allowInput) return;
       const answerEl = document.getElementById('answer');
-      const userAns = answerEl.value.trim();
+      const userAns = answerEl.value;
+      
+      const normalized = normalizeAnswer(userAns, current.esp);
 
-      if (userAns === current.esp) {
+      if (normalized.user === normalized.expected) {
         document.getElementById('feedback').textContent = "Correct!";
         document.getElementById('feedback').style.color = "#118b0a";
         right++;
@@ -609,20 +646,15 @@
 
     function closeVocabModal() {
       vocabModal.classList.add('hidden');
-      // After closing, return focus to the input for better UX
       const answerEl = document.getElementById('answer');
-      answerEl.focus(); // standard DOM focus [web:12]
-      answerEl.select(); // select input text [web:21]
+      answerEl.focus();
+      answerEl.select();
     }
 
     vocabModalClose.addEventListener('click', closeVocabModal);
-
-    // Click outside the modal content closes it
     vocabModal.addEventListener('click', function (e) {
       if (e.target === vocabModal) closeVocabModal();
     });
-
-    // ESC closes modal
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !vocabModal.classList.contains('hidden')) {
         closeVocabModal();
@@ -633,7 +665,6 @@
     initOrder();
     showQuestion();
     updateStatsAndHistory();
-    // Modal is visible by default on page load
   </script>
 </body>
 </html>
