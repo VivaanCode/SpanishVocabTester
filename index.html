@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spanish Vocab Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f3efe8;
+    }
+
+    #quiz-box {
+      max-width: 520px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px 0 #bbb;
+      padding: 2em 1.5em 1em 1.5em;
+    }
+
+    @media (max-width: 600px) {
+      #quiz-box {
+        max-width: 99vw;
+        padding: 1em 0.4em 0.7em 0.4em;
+      }
+      h2 { font-size: 1.08em; }
+    }
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 0.4em;
+    }
+
+    input[type="text"], button {
+      font-size: 1.1em;
+      width: 100%;
+      padding: 0.6em;
+      margin-top: 0.2em;
+      border-radius: 5px;
+      border: 1px solid #b1b1b1;
+      box-sizing: border-box;
+    }
+
+    input[type='text']:focus {
+      outline: 2px solid #adb5bd;
+      background: #f8f9fa;
+    }
+
+    button {
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 0.8em;
+      transition: background 0.12s;
+    }
+
+    button:active, button:focus {
+      background: #256029;
+    }
+
+    #check-btn {
+      display: block;
+    }
+
+    @media (min-width: 601px) {
+      #check-btn {
+        display: none;
+      }
+    }
+
+    #feedback {
+      font-weight: bold;
+      min-height: 24px;
+      margin-top: 10px;
+      transition: color 0.2s;
+    }
+
+    .stats-history-section {
+      background: #f6f4ec;
+      margin: 24px -24px 0 -24px;
+      padding: 16px 24px 1px 24px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      box-sizing: border-box;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 600px) {
+      .stats-history-section {
+        margin: 18px -10px 0 -10px;
+        padding: 14px 9px 0.5px 9px;
+      }
+    }
+
+    .scorebox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8em;
+      font-size: 1.08em;
+    }
+
+    .scorebox .right { color: #1a7e24; }
+    .scorebox .wrong { color: #d32f2f; }
+    .score-label { font-variant: small-caps; }
+
+    #history-list {
+      list-style: none;
+      margin: 0.5em 0 0 0;
+      padding: 0;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      margin-bottom: 4px;
+      padding: 5px 0 5px 0;
+      border-bottom: 1px dotted #e8e5c7;
+    }
+
+    .history-item:last-child { border-bottom: none; }
+    .correct { color: #1b8c18; }
+    .incorrect { color: #d32f2f; }
+    .qeng { flex: 3; }
+    .userans { flex: 2; padding-left: 12px; font-style: italic; }
+    .corrans { flex: 2; padding-left: 12px; }
+
+    @media (max-width:600px) {
+      .scorebox { font-size: 0.99em; }
+      .userans, .corrans { padding-left: 7px; }
+    }
+
+    /* Modal overlay (responsive) */
+    #vocab-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #vocab-modal.hidden {
+      display: none;
+    }
+
+    .vocab-modal-content {
+      background: #ffffff;
+      max-width: 480px;
+      width: 90vw;
+      padding: 1.3em 1.1em 1.1em 1.1em;
+      border-radius: 10px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+      box-sizing: border-box;
+    }
+
+    .vocab-modal-content h3 {
+      margin: 0 0 0.6em 0;
+      font-size: 1.1em;
+    }
+
+    .vocab-modal-content p {
+      margin: 0;
+      font-size: 0.98em;
+      line-height: 1.4;
+    }
+
+    .vocab-modal-content a {
+      color: #1976d2;
+      text-decoration: underline;
+      word-break: break-word;
+    }
+
+    .vocab-modal-close {
+      border: none;
+      background: transparent;
+      font-size: 1.4em;
+      line-height: 1;
+      cursor: pointer;
+      float: right;
+      margin-left: 0.5em;
+      padding: 0;
+    }
+
+    @media (max-width: 480px) {
+      .vocab-modal-content {
+        width: 94vw;
+        padding: 1.1em 0.9em 0.9em 0.9em;
+      }
+      .vocab-modal-content h3 {
+        font-size: 1em;
+      }
+      .vocab-modal-content p {
+        font-size: 0.94em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="quiz-box">
+    <h2>Spanish Vocab Quiz (Complete)</h2>
+    <div id="question"></div>
+    <input type="text" id="answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      placeholder="Type answer using accents if needed" />
+    <button id="check-btn" onclick="checkAnswer()">✓ Check</button>
+    <button onclick="checkAnswer()" style="display:none;">Check Answer</button>
+    <div id="feedback"></div>
+    <div class="stats-history-section">
+      <div class="scorebox">
+        <span class="score-label right">Right: <span id="right">0</span></span>
+        <span class="score-label wrong">Wrong: <span id="wrong">0</span></span>
+      </div>
+      <div style="font-size:0.95em; color:#767; margin-bottom:8px;">History:</div>
+      <ul id="history-list"></ul>
+    </div>
+  </div>
+
+  <!-- Modal (opens on page load) -->
+  <div id="vocab-modal" aria-modal="true" role="dialog">
+    <div class="vocab-modal-content">
+      <button class="vocab-modal-close" aria-label="Close notice">&times;</button>
+      <h3>Vocabulary Update</h3>
+      <p>
+        Vocabulary updated for all final vocabulary. Full vocabulary list is
+        <a href="https://docs.google.com/document/d/1QtoztlA2zzjpPAVj9qm7TAPvgp191pPXhWpu4yGYkOA/edit?usp=sharing"
+           target="_blank" rel="noopener noreferrer">here</a>.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Complete vocabulary list (no duplicates, fixed C.R. entries)
+    const vocab = [{eng: "strawberry", esp: "la fresa"}
+​
+{eng: "apple", esp: "la manzana"}
+​
+{eng: "melon", esp: "el melón"}
+​
+{eng: "orange", esp: "la naranja"}
+​
+{eng: "papaya", esp: "la papaya"}
+​
+{eng: "cucumber", esp: "el pepino"}
+​
+{eng: "pineapple", esp: "la piña"}
+​
+{eng: "banana; plantain", esp: "el plátano"}
+​
+{eng: "watermelon", esp: "la sandía"}
+​
+{eng: "grape", esp: "la uva"}
+​
+
+{eng: "lettuce", esp: "la lechuga"}
+​
+{eng: "spinach", esp: "las espinacas"}
+​
+
+{eng: "onion", esp: "la cebolla"}
+​
+{eng: "poblano chili", esp: "el chile poblano"}
+​
+{eng: "salad", esp: "la ensalada"}
+​
+{eng: "potato", esp: "la papa"}
+​
+
+{eng: "water", esp: "el agua"}
+​
+{eng: "fruit-flavored water", esp: "el agua fresca"}
+​
+{eng: "smoothie; shake", esp: "el batido"}
+​
+{eng: "juice", esp: "el jugo"}
+​
+
+{eng: "orange (color)", esp: "anaranjado/a"}
+​
+{eng: "yellow", esp: "amarillo/a"}
+​
+{eng: "blue", esp: "azul"}
+​
+{eng: "white", esp: "blanco/a"}
+​
+{eng: "purple", esp: "morado/a"}
+​
+{eng: "black", esp: "negro/a"}
+​
+{eng: "red", esp: "rojo"}
+​
+{eng: "pink", esp: "rosado/a"}
+​
+{eng: "green", esp: "verde"}
+​
+
+{eng: "to drink", esp: "beber"}
+​
+{eng: "to buy", esp: "comprar"}
+​
+{eng: "to ask for; to order", esp: "pedir (e → i)"}
+​
+{eng: "to think", esp: "pensar (e → ie)"}
+​
+{eng: "to prefer", esp: "preferir (e → ie)"}
+​
+{eng: "to try", esp: "probar (o → ue)"}
+​
+{eng: "to want", esp: "querer (e → ie)"}
+​
+{eng: "to recommend", esp: "recomendar (e → ie)"}
+​
+{eng: "to sell", esp: "vender"}
+​
+
+{eng: "What can I get for you?", esp: "¿Qué va a llevar?"}
+​
+{eng: "I’d like . . .", esp: "Quiero . . ."}
+​
+{eng: "Please give me . . .", esp: "Póngame por favor . . ."}
+​
+{eng: "a kilo (of)", esp: "un kilo (de)"}
+​
+{eng: "half a kilo (of)", esp: "medio kilo (de)"}
+​
+{eng: "fourth of a kilo (of)", esp: "un cuarto de kilo (de)"}
+​
+{eng: "100 grams", esp: "cien gramos"}
+​
+{eng: "a dozen (of)", esp: "una docena (de)"}
+​
+{eng: "How much is it?", esp: "¿Cuánto es?"}
+​
+{eng: "It’ll be 30 pesos.", esp: "Son 30 pesos."}
+​
+{eng: "Here you go/Here it is.", esp: "Aquí lo tiene."}
+​
+
+{eng: "lunch", esp: "el almuerzo"}
+​
+{eng: "dinner", esp: "la cena"}
+​
+{eng: "midday meal", esp: "la comida"}
+​
+{eng: "breakfast", esp: "el desayuno"}
+​
+
+{eng: "avocado", esp: "el aguacate"}
+​
+{eng: "rice", esp: "el arroz"}
+​
+{eng: "steak", esp: "el bistec"}
+​
+{eng: "meat", esp: "la carne"}
+​
+{eng: "beans", esp: "los frijoles"}
+​
+{eng: "hamburger", esp: "la hamburguesa"}
+​
+{eng: "vanilla ice cream", esp: "el helado de vainilla"}
+​
+{eng: "fried/ranchero-style eggs", esp: "los huevos fritos/rancheros"}
+​
+{eng: "ham", esp: "el jamón"}
+​
+{eng: "sweet bread", esp: "el pan dulce"}
+​
+{eng: "cake; pastry", esp: "el pastel"}
+​
+{eng: "toast", esp: "la tostada"}
+​
+{eng: "French fries", esp: "las papas fritas"}
+​
+{eng: "chicken with mole sauce", esp: "el pollo con mole"}
+​
+{eng: "cheese sandwich", esp: "el sándwich de queso"}
+​
+{eng: "tortilla soup", esp: "la sopa azteca"}
+​
+{eng: "tomato soup", esp: "la sopa de tomate"}
+​
+{eng: "corn tortilla", esp: "la tortilla de maíz"}
+​
+{eng: "apple pie", esp: "el pay de manzana"}
+​
+{eng: "dessert", esp: "el postre"}
+​
+{eng: "yogurt with fruit", esp: "el yogur con frutas"}
+​
+
+{eng: "coffee with milk", esp: "el café con leche"}
+​
+{eng: "soft drink", esp: "el refresco"}
+​
+{eng: "iced tea", esp: "el té helado"}
+​
+
+{eng: "Yum! Delicious!", esp: "¡Qué rico!"}
+​
+{eng: "How disgusting! Gross!", esp: "¡Qué asco!"}
+​
+
+{eng: "stand", esp: "el puesto"}
+​
+{eng: "quesadilla", esp: "la quesadilla"}
+​
+{eng: "salsa; sauce", esp: "la salsa"}
+​
+{eng: "beef tacos", esp: "los tacos de carne asada"}
+​
+{eng: "pork tacos", esp: "los tacos de carnitas"}
+​
+{eng: "fish tacos", esp: "los tacos de pescado"}
+​
+{eng: "flour tortilla", esp: "la tortilla de harina"}
+​
+{eng: "taco stand", esp: "la taquería"}
+​
+
+{eng: "How’s the food?", esp: "¿Cómo está la comida?"}
+​
+{eng: "good; tasty", esp: "bueno/a"}
+​
+{eng: "hot", esp: "caliente"}
+​
+{eng: "delicious", esp: "delicioso/a"}
+​
+{eng: "sweet", esp: "dulce"}
+​
+{eng: "this", esp: "este/esta"}
+​
+{eng: "these", esp: "estos/estas"}
+​
+{eng: "fresh", esp: "fresco/a"}
+​
+{eng: "cold", esp: "frío/a"}
+​
+{eng: "spicy", esp: "picante"}
+​
+{eng: "delicious", esp: "rico/a"}
+​
+{eng: "tasty; delicious", esp: "sabroso/a"}
+​
+{eng: "salty", esp: "salado/a"}
+​
+
+{eng: "to feel like + -ing", esp: "tener ganas de + inf."}
+​
+{eng: "to be hungry", esp: "tener hambre"}
+​
+{eng: "to be thirsty", esp: "tener sed"}
+​
+
+{eng: "sugar", esp: "el azúcar"}
+​
+{eng: "to cook", esp: "cocinar"}
+​
+{eng: "egg custard", esp: "el flan"}
+​
+{eng: "to pay", esp: "pagar"}
+​
+{eng: "in cash", esp: "en efectivo"}
+​
+{eng: "by credit card", esp: "con tarjeta de crédito"}
+​
+{eng: "to carry; take out", esp: "llevar"}
+​
+{eng: "to prepare", esp: "preparar"}
+​
+{eng: "salt", esp: "la sal"}
+​
+{eng: "to serve", esp: "servir (e → i)"}
+​
+
+
+    ];
+    let idx = 0, order = [], current = {};
+    let right = 0, wrong = 0;
+    const history = [];
+    let allowInput = true;
+
+    function normalizeAnswer(userInput, expected) {
+      // Ultra-flexible normalization that accepts ANY variation
+      const normalizeText = (text) => {
+        return text
+          .trim()
+          .toLowerCase()
+          // Normalize ALL dot variations to single dots with spaces
+          .replace(/\.+/g, '.')           // multiple dots → single dot
+          .replace(/\s*\.\s*/g, '. ')     // dot + any spaces → ". "
+          .replace(/^\.+|\.+$/g, '')      // remove leading/trailing dots
+          // Normalize ALL separator variations: / , | - → /
+          .replace(/[|,|-]/g, '/')        // , | - → /
+          .replace(/\s*\/\s*/g, '/')      // / with any spaces → /
+          // Normalize multiple slashes
+          .replace(/\/+/g, '/')
+          // Normalize multiple spaces
+          .replace(/\s+/g, ' ')
+          .trim();
+      };
+
+      return {
+        user: normalizeText(userInput),
+        expected: normalizeText(expected)
+      };
+    }
+
+    function initOrder() {
+      order = [...Array(vocab.length).keys()].sort(() => Math.random() - 0.5);
+      idx = 0;
+    }
+
+    function showQuestion() {
+      allowInput = true;
+      idx++;
+      current = vocab[order[(idx - 1) % vocab.length]];
+      const answerEl = document.getElementById('answer');
+
+      document.getElementById('question').textContent = "Spanish for: " + current.eng;
+      answerEl.value = '';
+      document.getElementById('feedback').textContent = '';
+      answerEl.disabled = false;
+
+      answerEl.focus();
+      answerEl.select();
+    }
+
+    function updateStatsAndHistory() {
+      document.getElementById('right').textContent = right;
+      document.getElementById('wrong').textContent = wrong;
+      let html = '';
+      for (let i = history.length - 1; i >= 0; i--) {
+        const h = history[i];
+        html += `<li class="history-item">
+                    <span class="qeng">${h.eng}</span>
+                    <span class="userans ${h.correct ? 'correct' : 'incorrect'}">${h.your}</span>
+                    <span class="corrans">${h.correct ? '' : '→ ' + h.exp}</span>
+                  </li>`;
+      }
+      document.getElementById('history-list').innerHTML = html;
+    }
+
+    function checkAnswer() {
+      if (!allowInput) return;
+      const answerEl = document.getElementById('answer');
+      const userAns = answerEl.value;
+      
+      const normalized = normalizeAnswer(userAns, current.esp);
+
+      if (normalized.user === normalized.expected) {
+        document.getElementById('feedback').textContent = "Correct!";
+        document.getElementById('feedback').style.color = "#118b0a";
+        right++;
+        history.push({eng: current.eng, your: userAns, exp: current.esp, correct: true});
+      } else {
+        document.getElementById('feedback').textContent = "Nope! It's: " + current.esp;
+        document.getElementById('feedback').style.color = "#b8161a";
+        wrong++;
+        history.push({eng: current.eng, your: userAns, exp: current.esp, correct: false});
+      }
+
+      updateStatsAndHistory();
+      allowInput = false;
+      answerEl.disabled = true;
+      setTimeout(showQuestion, 1500);
+    }
+
+    document.getElementById('answer').addEventListener('keyup', function (e) {
+      if (e.key === "Enter") checkAnswer();
+    });
+
+    // Modal logic
+    const vocabModal = document.getElementById('vocab-modal');
+    const vocabModalClose = document.querySelector('.vocab-modal-close');
+
+    function closeVocabModal() {
+      vocabModal.classList.add('hidden');
+      const answerEl = document.getElementById('answer');
+      answerEl.focus();
+      answerEl.select();
+    }
+
+    vocabModalClose.addEventListener('click', closeVocabModal);
+    vocabModal.addEventListener('click', function (e) {
+      if (e.target === vocabModal) closeVocabModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !vocabModal.classList.contains('hidden')) {
+        closeVocabModal();
+      }
+    });
+
+    // Initialize
+    initOrder();
+    showQuestion();
+    updateStatsAndHistory();
+  </script>
+</body>
+</html>
